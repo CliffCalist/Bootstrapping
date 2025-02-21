@@ -4,8 +4,10 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
+using WhiteArrow.Bootstraping;
+using WhiteArrowEditor;
 
-namespace WhiteArrow.Bootstraping.Editor
+namespace WhiteArrowEditor.Bootstraping
 {
     /// <summary>
     /// Updates the BootstrapModuleRegistry whenever scripts are recompiled or new assets are imported.
