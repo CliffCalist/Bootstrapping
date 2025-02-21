@@ -1,0 +1,11 @@
+{
+    "name": "com.white-arrow.bootstrapping",
+    "version": "1.0.0",
+    "displayName": "Bootstrapping",
+    "description": "Library for bootstrapping game or scene in Unity Engine.",
+    "licensesUrl": "https://github.com/CliffCalist/Bootstrapping/blob/b8e854d9f6896c6d35d890719ed73c1e675cee0f/LICENSE",
+    "author": {
+        "name": "White Arrow",
+        "email": "cliffstersprog@gmail.com"
+    }
+}
