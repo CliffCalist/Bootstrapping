@@ -6,7 +6,7 @@ namespace WhiteArrow.Bootstraping
     {
         public GameObject SelfObject { get; }
 
-        public void Open();
-        public void Close();
+        public void Show();
+        public void Hide();
     }
 }

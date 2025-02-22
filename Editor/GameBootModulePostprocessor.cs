@@ -14,11 +14,11 @@ namespace WhiteArrowEditor.Bootstraping
     /// </summary>
     public class GameBootModulePostprocessor : AssetPostprocessor
     {
-        private static GameBootModuleRegistry _bootModuleRegistry;
+        private static GameBootModulesRegistry _bootModuleRegistry;
 
 
         public const string RESOURCES_FOLDER_PATH = "Assets/Resources/";
-        public const string REGISTRY_ASSET_PATH = RESOURCES_FOLDER_PATH + GameBootModuleRegistry.FILE_NAME + ".asset";
+        public const string REGISTRY_ASSET_PATH = RESOURCES_FOLDER_PATH + GameBootModulesRegistry.FILE_NAME + ".asset";
 
 
 
@@ -101,7 +101,7 @@ namespace WhiteArrowEditor.Bootstraping
             {
                 _bootModuleRegistry.ModuleTypeNames = moduleTypes;
                 SaveBootModuleRegistry();
-                Debug.Log($"{nameof(GameBootModuleRegistry)} updated: {moduleTypes.Count} modules found.");
+                Debug.Log($"{nameof(GameBootModulesRegistry)} updated: {moduleTypes.Count} modules found.");
             }
         }
 
@@ -113,14 +113,14 @@ namespace WhiteArrowEditor.Bootstraping
                 return;
 
 
-            _bootModuleRegistry = AssetDatabase.LoadAssetAtPath<GameBootModuleRegistry>(REGISTRY_ASSET_PATH);
+            _bootModuleRegistry = AssetDatabase.LoadAssetAtPath<GameBootModulesRegistry>(REGISTRY_ASSET_PATH);
 
             if (_bootModuleRegistry == null)
             {
                 if (!AssetDatabase.IsValidFolder(RESOURCES_FOLDER_PATH))
                     Project.CreateFullFolderPath(RESOURCES_FOLDER_PATH);
 
-                _bootModuleRegistry = ScriptableObject.CreateInstance<GameBootModuleRegistry>();
+                _bootModuleRegistry = ScriptableObject.CreateInstance<GameBootModulesRegistry>();
                 AssetDatabase.CreateAsset(_bootModuleRegistry, REGISTRY_ASSET_PATH);
 
                 Debug.Log($"{REGISTRY_ASSET_PATH} asset created.");

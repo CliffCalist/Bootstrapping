@@ -7,7 +7,7 @@ namespace WhiteArrow.Bootstraping
     /// Registry for storing the list of bootstrap module type names.
     /// This ScriptableObject ensures type data is preloaded in builds and reduces runtime reflection.
     /// </summary>
-    public class GameBootModuleRegistry : ScriptableObject
+    public class GameBootModulesRegistry : ScriptableObject
     {
         [HideInInspector] public bool BootstrapingIsEnabled = true;
 
@@ -15,6 +15,6 @@ namespace WhiteArrow.Bootstraping
         public List<string> ModuleTypeNames = new();
 
 
-        public const string FILE_NAME = "GameBootstrapModuleRegistry";
+        public const string FILE_NAME = "GameBootstrapModulesRegistry";
     }
 }
