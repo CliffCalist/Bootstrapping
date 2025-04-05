@@ -91,7 +91,7 @@ namespace WhiteArrowEditor.Bootstraping
                     && !type.IsAbstract
                     && type.IsSubclassOf(typeof(GameBootModule))
                     && type.GetCustomAttribute<GameBootModuleAttribute>() != null)
-                .Select(type => type.FullName)
+                .Select(type => type.AssemblyQualifiedName)
                 .ToList();
 
             LoadBootModuleRegistry();
