@@ -85,12 +85,12 @@ namespace WhiteArrowEditor.Bootstraping
         private static void UpdateBootstrapModuleRegistry()
         {
             // Find all valid module types.
-            var moduleTypes = System.Reflection.Assembly.GetExecutingAssembly()
-                .GetTypes()
+            var moduleTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypesSafe())
                 .Where(type => type.IsClass
-                               && !type.IsAbstract
-                               && type.IsSubclassOf(typeof(GameBootModule))
-                               && type.GetCustomAttribute<GameBootModuleAttribute>() != null)
+                    && !type.IsAbstract
+                    && type.IsSubclassOf(typeof(GameBootModule))
+                    && type.GetCustomAttribute<GameBootModuleAttribute>() != null)
                 .Select(type => type.FullName)
                 .ToList();
 
