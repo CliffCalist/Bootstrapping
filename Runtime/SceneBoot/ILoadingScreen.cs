@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace WhiteArrow.Bootstraping
@@ -6,7 +7,7 @@ namespace WhiteArrow.Bootstraping
     {
         public GameObject SelfObject { get; }
 
-        public void Show();
+        public void Show(Action callback);
         public void Hide();
     }
 }

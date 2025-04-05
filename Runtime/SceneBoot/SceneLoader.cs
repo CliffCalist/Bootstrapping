@@ -21,7 +21,15 @@ namespace WhiteArrow.Bootstraping
             GameBootModulesRegistryProvider.ThrowIsNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
-            LoadingScreenProvider.Screen?.Show();
+            if (LoadingScreenProvider.Screen != null)
+            {
+                var isScreenShowed = false;
+                LoadingScreenProvider.Screen.Show(() => isScreenShowed = true);
+
+                var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
+                yield return waitWhileScreenShowing;
+            }
+
             yield return LoadIntermediateScene();
 
             Debug.Log($"<color=yellow>Loading target scene: {sceneName}</color>");
