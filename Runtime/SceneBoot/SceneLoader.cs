@@ -21,7 +21,7 @@ namespace WhiteArrow.Bootstraping
             GameBootModulesRegistryProvider.ThrowIsNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
-            if (LoadingScreenProvider.Screen != null)
+            if (LoadingScreenProvider.Screen != null && !LoadingScreenProvider.Screen.IsShowed)
             {
                 var isScreenShowed = false;
                 LoadingScreenProvider.Screen.Show(() => isScreenShowed = true);
@@ -36,7 +36,11 @@ namespace WhiteArrow.Bootstraping
             yield return SceneManager.LoadSceneAsync(sceneName);
             Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
-            RunSceneBoot(() => LoadingScreenProvider.Screen?.Hide());
+            RunSceneBoot(() =>
+            {
+                if (LoadingScreenProvider.Screen != null && LoadingScreenProvider.Screen.IsShowed)
+                    LoadingScreenProvider.Screen.Hide();
+            });
         }
 
 
