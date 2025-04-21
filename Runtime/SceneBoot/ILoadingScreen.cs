@@ -1,14 +1,14 @@
 using System;
-using UnityEngine;
 
 namespace WhiteArrow.Bootstraping
 {
     public interface ILoadingScreen
     {
-        public GameObject SelfObject { get; }
-        public bool IsShowed { get; }
+        bool IsShowed { get; }
 
-        public void Show(Action callback);
-        public void Hide();
+        void MarkAsDontDestroyOnLoad();
+
+        void Show(bool skipAnimations, Action callback);
+        void Hide();
     }
 }

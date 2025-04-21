@@ -16,18 +16,22 @@ namespace WhiteArrow.Bootstraping
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
         /// <returns>IEnumerator for coroutine execution.</returns>
-        public static IEnumerator LoadScene(string sceneName)
+        public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAniamtions = false)
         {
             GameBootModulesRegistryProvider.ThrowIsNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
             if (LoadingScreenProvider.Screen != null && !LoadingScreenProvider.Screen.IsShowed)
             {
-                var isScreenShowed = false;
-                LoadingScreenProvider.Screen.Show(() => isScreenShowed = true);
+                if (!skipShowLoadingScreenAniamtions)
+                {
+                    var isScreenShowed = false;
+                    LoadingScreenProvider.Screen.Show(false, () => isScreenShowed = true);
 
-                var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
-                yield return waitWhileScreenShowing;
+                    var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
+                    yield return waitWhileScreenShowing;
+                }
+                else LoadingScreenProvider.Screen.Show(true, null);
             }
 
             yield return LoadIntermediateScene();

@@ -9,7 +9,7 @@ namespace WhiteArrow.Bootstraping
         public static void SetScreen(ILoadingScreen screen)
         {
             Screen = screen ?? throw new ArgumentNullException(nameof(screen));
-            UnityEngine.Object.DontDestroyOnLoad(Screen.SelfObject);
+            Screen.MarkAsDontDestroyOnLoad();
         }
     }
 }
