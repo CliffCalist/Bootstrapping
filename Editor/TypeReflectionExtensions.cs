@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-public static class TypeReflectionExtensions
+namespace WhiteArrowEditor.Bootstraping
 {
-    public static IEnumerable<Type> GetTypesSafe(this Assembly assembly)
+    public static class TypeReflectionExtensions
     {
-        try
+        public static IEnumerable<Type> GetTypesSafe(this Assembly assembly)
         {
-            return assembly.GetTypes();
-        }
-        catch (ReflectionTypeLoadException e)
-        {
-            return e.Types.Where(t => t != null);
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                return e.Types.Where(t => t != null);
+            }
         }
     }
 }

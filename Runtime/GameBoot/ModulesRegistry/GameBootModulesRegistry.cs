@@ -9,9 +9,7 @@ namespace WhiteArrow.Bootstraping
     /// </summary>
     public class GameBootModulesRegistry : ScriptableObject
     {
-        [HideInInspector] public bool BootstrapingIsEnabled = true;
-
-        [HideInInspector]
+        public bool BootstrapingIsEnabled = true;
         public List<string> ModuleTypeNames = new();
 
 

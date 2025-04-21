@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
 using WhiteArrow.Bootstraping;
-using WhiteArrowEditor;
 
 namespace WhiteArrowEditor.Bootstraping
 {
