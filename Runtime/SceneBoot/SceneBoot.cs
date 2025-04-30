@@ -19,7 +19,7 @@ namespace WhiteArrow.Bootstraping
             Run();
         }
 
-        public abstract void Run();
+        internal protected abstract void Run();
 
 
 
