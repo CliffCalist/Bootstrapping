@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,11 +39,10 @@ namespace WhiteArrow.Bootstraping
             yield return SceneManager.LoadSceneAsync(sceneName);
             Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
-            RunSceneBoot(() =>
-            {
-                if (LoadingScreenProvider.Screen != null && LoadingScreenProvider.Screen.IsShowed)
-                    LoadingScreenProvider.Screen.Hide();
-            });
+            yield return WaitBootFinish();
+
+            if (LoadingScreenProvider.Screen != null && LoadingScreenProvider.Screen.IsShowed)
+                LoadingScreenProvider.Screen.Hide();
         }
 
 
@@ -57,15 +55,15 @@ namespace WhiteArrow.Bootstraping
             }
         }
 
-        private static void RunSceneBoot(Action onCompleted)
+        private static IEnumerator WaitBootFinish()
         {
             var sceneBootstrap = UnityEngine.Object.FindAnyObjectByType<SceneBoot>();
             if (sceneBootstrap == null)
             {
                 Debug.LogWarning($"{nameof(SceneBoot)} isnt found on loaded scene.");
-                onCompleted();
+                yield break;
             }
-            else sceneBootstrap.Run(onCompleted);
+            else yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
         }
     }
 }

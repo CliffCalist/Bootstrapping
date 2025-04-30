@@ -5,6 +5,28 @@ namespace WhiteArrow.Bootstraping
 {
     public abstract class SceneBoot : MonoBehaviour
     {
-        public abstract void Run(Action onEnded);
+        public bool IsFinished { get; private set; }
+
+
+
+        public event Action Finished;
+
+
+
+        private void Start()
+        {
+            IsFinished = true;
+            Run();
+        }
+
+        public abstract void Run();
+
+
+
+        protected void OnFinished()
+        {
+            IsFinished = true;
+            Finished?.Invoke();
+        }
     }
 }
