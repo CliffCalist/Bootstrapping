@@ -12,7 +12,7 @@ namespace WhiteArrow.Bootstraping
         public static void ThrowIfNotLaunched()
         {
             if (!IsLaunched)
-                throw new InvalidOperationException($"Not all {nameof(GameBootModule)} have finished working.");
+                throw new InvalidOperationException($"Not all {nameof(IGameBootModule)} have finished working.");
         }
 
 

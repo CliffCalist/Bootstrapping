@@ -46,11 +46,11 @@ namespace WhiteArrow.Bootstraping
         /// Create all GameBootstrapModule instances from the registry.
         /// </summary>
         /// <returns>A list of instantiated GameBootstrapModule objects.</returns>
-        public static List<GameBootModule> CreateModules()
+        public static List<IGameBootModule> CreateModules()
         {
             LoadRegistry();
 
-            var modules = new List<GameBootModule>();
+            var modules = new List<IGameBootModule>();
             if (s_registry == null)
             {
                 Debug.LogError($"{nameof(GameBootModulesRegistry)} not found in Resources folder.");
@@ -68,7 +68,7 @@ namespace WhiteArrow.Bootstraping
                         continue;
                     }
 
-                    var moduleInstance = (GameBootModule)Activator.CreateInstance(type);
+                    var moduleInstance = (IGameBootModule)Activator.CreateInstance(type);
                     modules.Add(moduleInstance);
                 }
                 catch (Exception ex)

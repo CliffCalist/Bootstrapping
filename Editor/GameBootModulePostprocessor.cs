@@ -88,8 +88,7 @@ namespace WhiteArrowEditor.Bootstraping
                 .SelectMany(assembly => assembly.GetTypesSafe())
                 .Where(type => type.IsClass
                     && !type.IsAbstract
-                    && type.IsSubclassOf(typeof(GameBootModule))
-                    && type.GetCustomAttribute<GameBootOrderAttribute>() != null)
+                    && type.IsSubclassOf(typeof(IGameBootModule)))
                 .Select(type => type.AssemblyQualifiedName)
                 .ToList();
 
