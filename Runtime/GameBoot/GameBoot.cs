@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,13 +13,18 @@ namespace WhiteArrow.Bootstraping
         public static void ThrowIfNotLaunched()
         {
             if (!IsLaunched)
-                throw new InvalidOperationException($"Not all {nameof(IGameBootModule)} have finished working.");
+                throw new InvalidOperationException($"Not all {nameof(IAsyncGameBootModule)} have finished working.");
         }
 
 
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnGameLaunched()
+        {
+            _ = RunAsync();
+        }
+
+        private static async Task RunAsync()
         {
             if (GameBootModulesRegistryProvider.LogIsNotEnabled())
                 return;
@@ -31,7 +37,7 @@ namespace WhiteArrow.Bootstraping
                 var moduleName = module.GetType().Name;
 
                 Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
-                module.Run();
+                await module.RunAsync();
                 Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
             }
 
