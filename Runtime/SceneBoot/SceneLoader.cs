@@ -15,14 +15,14 @@ namespace WhiteArrow.Bootstraping
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
         /// <returns>IEnumerator for coroutine execution.</returns>
-        public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAniamtions = false)
+        public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
             GameBootModulesRegistryProvider.ThrowIsNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
             if (LoadingScreenProvider.Screen != null && !LoadingScreenProvider.Screen.IsShowed)
             {
-                if (!skipShowLoadingScreenAniamtions)
+                if (!skipShowLoadingScreenAnimations)
                 {
                     var isScreenShowed = false;
                     LoadingScreenProvider.Screen.Show(false, () => isScreenShowed = true);
@@ -60,7 +60,7 @@ namespace WhiteArrow.Bootstraping
             var sceneBootstrap = UnityEngine.Object.FindAnyObjectByType<SceneBoot>();
             if (sceneBootstrap == null)
             {
-                Debug.LogWarning($"{nameof(SceneBoot)} isnt found on loaded scene.");
+                Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
                 yield break;
             }
             else yield return new WaitWhile(() => !sceneBootstrap.IsFinished);

@@ -18,7 +18,7 @@ namespace WhiteArrow.Bootstraping
 
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void OnGameLaucnhed()
+        private static void OnGameLaunched()
         {
             if (GameBootModulesRegistryProvider.LogIsNotEnabled())
                 return;
