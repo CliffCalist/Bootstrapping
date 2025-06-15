@@ -79,8 +79,8 @@ namespace WhiteArrow.Bootstraping
 
             modules.Sort((a, b) =>
             {
-                var orderA = a.GetType().GetCustomAttribute<GameBootModuleAttribute>()?.Order ?? int.MaxValue;
-                var orderB = b.GetType().GetCustomAttribute<GameBootModuleAttribute>()?.Order ?? int.MaxValue;
+                var orderA = a.GetType().GetCustomAttribute<GameBootOrderAttribute>()?.Order ?? int.MaxValue;
+                var orderB = b.GetType().GetCustomAttribute<GameBootOrderAttribute>()?.Order ?? int.MaxValue;
                 return orderA.CompareTo(orderB);
             });
 

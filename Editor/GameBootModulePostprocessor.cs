@@ -89,7 +89,7 @@ namespace WhiteArrowEditor.Bootstraping
                 .Where(type => type.IsClass
                     && !type.IsAbstract
                     && type.IsSubclassOf(typeof(GameBootModule))
-                    && type.GetCustomAttribute<GameBootModuleAttribute>() != null)
+                    && type.GetCustomAttribute<GameBootOrderAttribute>() != null)
                 .Select(type => type.AssemblyQualifiedName)
                 .ToList();
 
