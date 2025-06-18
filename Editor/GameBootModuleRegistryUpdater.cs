@@ -26,7 +26,9 @@ namespace WhiteArrowEditor.Bootstraping
             UpdateBootstrapModuleRegistry();
         }
 
-        private static void UpdateBootstrapModuleRegistry()
+
+
+        public static void UpdateBootstrapModuleRegistry()
         {
             var moduleTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypesSafe())
@@ -40,7 +42,7 @@ namespace WhiteArrowEditor.Bootstraping
             {
                 _bootModuleRegistry.ModuleTypeNames = moduleTypes;
                 EditorBootModulesRegistryProvider.Save();
-                Debug.Log($"{nameof(GameBootModulesRegistry)} updated: {moduleTypes.Count} modules found.");
+                EditorUtility.DisplayDialog("Boot modules registry", $"{moduleTypes.Count} modules found.", "OK");
             }
         }
     }
