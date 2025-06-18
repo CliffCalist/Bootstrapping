@@ -6,6 +6,7 @@ using WhiteArrow.Bootstraping;
 
 namespace WhiteArrowEditor.Bootstraping
 {
+    [InitializeOnLoad]
     public class BootModulesRegistryUpdater
     {
         private static BootSettings _settings => EditorBootSettingsProvider.Load();
@@ -30,15 +31,19 @@ namespace WhiteArrowEditor.Bootstraping
                 .SelectMany(assembly => assembly.GetTypesSafe())
                 .Where(type => type.IsClass
                     && !type.IsAbstract
-                    && type.IsSubclassOf(typeof(IAsyncBootModule)))
-                .Select(type => type.AssemblyQualifiedName)
+                    && typeof(IAsyncBootModule).IsAssignableFrom(type))
                 .ToList();
 
-            if (!moduleTypes.SequenceEqual(_settings.ModuleTypeNames))
+            var moduleTypeAssemblyNames = moduleTypes.Select(t => t.AssemblyQualifiedName).ToList();
+
+            if (!moduleTypeAssemblyNames.SequenceEqual(_settings.ModuleTypeNames))
             {
-                _settings.ModuleTypeNames = moduleTypes;
+                _settings.ModuleTypeNames = moduleTypeAssemblyNames;
                 EditorBootSettingsProvider.Save();
-                EditorUtility.DisplayDialog("Boot modules registry", $"{moduleTypes.Count} modules found.", "OK");
+
+                var moduleTypeNames = moduleTypes.Select(t => t.FullName);
+                var message = $"Boot modules registry updated. Types found: {string.Join(", ", moduleTypeNames)}";
+                EditorUtility.DisplayDialog("New boot modules found", message, "OK");
             }
         }
     }
