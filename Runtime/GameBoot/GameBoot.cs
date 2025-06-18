@@ -13,7 +13,7 @@ namespace WhiteArrow.Bootstraping
         public static void ThrowIfNotLaunched()
         {
             if (!IsLaunched)
-                throw new InvalidOperationException($"Not all {nameof(IAsyncGameBootModule)} have finished working.");
+                throw new InvalidOperationException($"Not all {nameof(IAsyncBootModule)} have finished working.");
         }
 
 
@@ -26,12 +26,12 @@ namespace WhiteArrow.Bootstraping
 
         private static async Task RunAsync()
         {
-            if (GameBootModulesRegistryProvider.LogIsNotEnabled())
+            if (BootSettingsProvider.LogIsNotEnabled())
                 return;
 
             Debug.Log("<b>Game is bootstraping...</b>");
 
-            var modules = GameBootModulesRegistryProvider.CreateModules();
+            var modules = BootSettingsProvider.CreateModules();
             foreach (var module in modules)
             {
                 var moduleName = module.GetType().Name;

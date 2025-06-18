@@ -5,20 +5,17 @@ using UnityEngine;
 
 namespace WhiteArrow.Bootstraping
 {
-    /// <summary>
-    /// Handles loading bootstrap modules from the BootstrapModuleRegistry ScriptableObject.
-    /// </summary>
-    public static class GameBootModulesRegistryProvider
+    public static class BootSettingsProvider
     {
-        private static GameBootModulesRegistry s_registry;
+        private static BootSettings s_settings;
 
 
         public static bool IsEnabled
         {
             get
             {
-                LoadRegistry();
-                return s_registry.BootstrapingIsEnabled;
+                LoadSettings();
+                return s_settings.BootstrapingIsEnabled;
             }
         }
 
@@ -46,18 +43,18 @@ namespace WhiteArrow.Bootstraping
         /// Create all GameBootstrapModule instances from the registry.
         /// </summary>
         /// <returns>A list of instantiated GameBootstrapModule objects.</returns>
-        public static List<IAsyncGameBootModule> CreateModules()
+        public static List<IAsyncBootModule> CreateModules()
         {
-            LoadRegistry();
+            LoadSettings();
 
-            var modules = new List<IAsyncGameBootModule>();
-            if (s_registry == null)
+            var modules = new List<IAsyncBootModule>();
+            if (s_settings == null)
             {
-                Debug.LogError($"{nameof(GameBootModulesRegistry)} not found in Resources folder.");
+                Debug.LogError($"{nameof(BootSettings)} not found in Resources folder.");
                 return modules;
             }
 
-            foreach (var typeName in s_registry.ModuleTypeNames)
+            foreach (var typeName in s_settings.ModuleTypeNames)
             {
                 try
                 {
@@ -68,7 +65,7 @@ namespace WhiteArrow.Bootstraping
                         continue;
                     }
 
-                    var moduleInstance = (IAsyncGameBootModule)Activator.CreateInstance(type);
+                    var moduleInstance = (IAsyncBootModule)Activator.CreateInstance(type);
                     modules.Add(moduleInstance);
                 }
                 catch (Exception ex)
@@ -79,8 +76,8 @@ namespace WhiteArrow.Bootstraping
 
             modules.Sort((a, b) =>
             {
-                var orderA = a.GetType().GetCustomAttribute<GameBootOrderAttribute>()?.Order ?? int.MaxValue;
-                var orderB = b.GetType().GetCustomAttribute<GameBootOrderAttribute>()?.Order ?? int.MaxValue;
+                var orderA = a.GetType().GetCustomAttribute<BootModuleOrderAttribute>()?.Order ?? int.MaxValue;
+                var orderB = b.GetType().GetCustomAttribute<BootModuleOrderAttribute>()?.Order ?? int.MaxValue;
                 return orderA.CompareTo(orderB);
             });
 
@@ -89,10 +86,10 @@ namespace WhiteArrow.Bootstraping
 
 
 
-        private static void LoadRegistry()
+        private static void LoadSettings()
         {
-            if (s_registry == null)
-                s_registry = Resources.Load<GameBootModulesRegistry>(GameBootModulesRegistry.FILE_NAME);
+            if (s_settings == null)
+                s_settings = Resources.Load<BootSettings>(BootSettings.FILE_NAME);
         }
     }
 }

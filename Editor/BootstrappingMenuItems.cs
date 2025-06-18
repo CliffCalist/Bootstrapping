@@ -5,7 +5,7 @@ namespace WhiteArrowEditor.Bootstraping
 {
     public static class BootstrappingMenuItems
     {
-        private static GameBootModulesRegistry _bootModuleRegistry => EditorBootModulesRegistryProvider.Load();
+        private static BootSettings _bootModuleRegistry => EditorBootSettingsProvider.Load();
 
 
 
@@ -19,7 +19,7 @@ namespace WhiteArrowEditor.Bootstraping
         private static void EnableBootstraping()
         {
             _bootModuleRegistry.BootstrapingIsEnabled = true;
-            EditorBootModulesRegistryProvider.Save();
+            EditorBootSettingsProvider.Save();
         }
 
 
@@ -34,8 +34,9 @@ namespace WhiteArrowEditor.Bootstraping
         private static void DisableBootstraping()
         {
             _bootModuleRegistry.BootstrapingIsEnabled = false;
-            EditorBootModulesRegistryProvider.Save();
+            EditorBootSettingsProvider.Save();
         }
+
 
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Update Registry", true)]
@@ -47,8 +48,8 @@ namespace WhiteArrowEditor.Bootstraping
         [MenuItem("Tools/WhiteArrow/Bootstraping/Update Registry")]
         private static void UpdateRegistry()
         {
-            GameBootModuleRegistryUpdater.UpdateBootstrapModuleRegistry();
-            EditorBootModulesRegistryProvider.Save();
+            BootModulesRegistryUpdater.UpdateBootModulesRegistry();
+            EditorBootSettingsProvider.Save();
             EditorUtility.DisplayDialog("Success", "Bootstrapping registry updated successfully.", "OK");
         }
     }

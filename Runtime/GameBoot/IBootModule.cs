@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 
 namespace WhiteArrow.Bootstraping
 {
-    public interface IGameBootModule : IAsyncGameBootModule
+    public interface IBootModule : IAsyncBootModule
     {
-        Task IAsyncGameBootModule.RunAsync()
+        Task IAsyncBootModule.RunAsync()
         {
             Run();
             return Task.CompletedTask;

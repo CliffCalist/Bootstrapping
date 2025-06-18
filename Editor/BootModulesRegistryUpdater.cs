@@ -2,46 +2,42 @@ using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Compilation;
-using UnityEngine;
 using WhiteArrow.Bootstraping;
 
 namespace WhiteArrowEditor.Bootstraping
 {
-    /// <summary>
-    /// Updates the BootstrapModuleRegistry whenever scripts are recompiled or new assets are imported.
-    /// </summary>
-    public class GameBootModuleRegistryUpdater
+    public class BootModulesRegistryUpdater
     {
-        private static GameBootModulesRegistry _bootModuleRegistry => EditorBootModulesRegistryProvider.Load();
+        private static BootSettings _settings => EditorBootSettingsProvider.Load();
 
 
 
-        private GameBootModuleRegistryUpdater()
+        private BootModulesRegistryUpdater()
         {
             CompilationPipeline.assemblyCompilationFinished += OnScriptsCompiled;
         }
 
         private static void OnScriptsCompiled(string assemblyPath, CompilerMessage[] messages)
         {
-            UpdateBootstrapModuleRegistry();
+            UpdateBootModulesRegistry();
         }
 
 
 
-        public static void UpdateBootstrapModuleRegistry()
+        public static void UpdateBootModulesRegistry()
         {
             var moduleTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypesSafe())
                 .Where(type => type.IsClass
                     && !type.IsAbstract
-                    && type.IsSubclassOf(typeof(IAsyncGameBootModule)))
+                    && type.IsSubclassOf(typeof(IAsyncBootModule)))
                 .Select(type => type.AssemblyQualifiedName)
                 .ToList();
 
-            if (!moduleTypes.SequenceEqual(_bootModuleRegistry.ModuleTypeNames))
+            if (!moduleTypes.SequenceEqual(_settings.ModuleTypeNames))
             {
-                _bootModuleRegistry.ModuleTypeNames = moduleTypes;
-                EditorBootModulesRegistryProvider.Save();
+                _settings.ModuleTypeNames = moduleTypes;
+                EditorBootSettingsProvider.Save();
                 EditorUtility.DisplayDialog("Boot modules registry", $"{moduleTypes.Count} modules found.", "OK");
             }
         }

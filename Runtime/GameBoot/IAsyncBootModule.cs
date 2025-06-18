@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace WhiteArrow.Bootstraping
 {
-    public interface IAsyncGameBootModule
+    public interface IAsyncBootModule
     {
         Task RunAsync();
     }
