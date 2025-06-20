@@ -13,12 +13,6 @@ namespace WhiteArrow.Bootstraping
 
 
 
-        private void Start()
-        {
-            IsFinished = true;
-            Run();
-        }
-
         internal protected abstract void Run();
 
 

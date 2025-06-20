@@ -63,7 +63,11 @@ namespace WhiteArrow.Bootstraping
                 Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
                 yield break;
             }
-            else yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
+            else
+            {
+                sceneBootstrap.Run();
+                yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
+            }
         }
     }
 }
