@@ -2,7 +2,7 @@
 
 **Bootstrapping** is a modular initialization framework for Unity. It provides full control over both game startup and per-scene initialization, supports asynchronous logic, and intercepts Unity's default scene launching behavior for optimized memory and loading flow.
 
-## ✨ Features
+## Features
 
 - ⚙️ Game Boot Modules — execute before any scene is loaded.
 - 🧩 Scene Boot — per-scene logic triggered automatically after scene load.
@@ -14,7 +14,7 @@
 
 ---
 
-## 🚀 How It Works
+## How It Works
 
 ### Game Boot Modules
 
@@ -76,7 +76,7 @@ This technique avoids memory spikes during transitions and allows safe unloading
 
 ---
 
-## 🖼️ Loading Screen (Optional)
+## Loading Screen (Optional)
 
 You can display a loading screen during scene transitions. To do so, set the screen instance at runtime:
 
@@ -111,7 +111,7 @@ public class MyLoadingScreen : MonoBehaviour, ILoadingScreen
 }
 ```
 
-### 📌 When to set the loading screen
+### When to set the loading screen
 
 You should assign the loading screen **as early as possible**, before any scene transitions occur.  
 The recommended way is to create a game boot module that instantiates and sets the screen:
@@ -131,7 +131,7 @@ public class LoadingScreenInstaller : IBootModule
 
 ---
 
-## 🎬 How to Load Scenes
+## How to Load Scenes
 
 To load a scene using the framework (with optional intermediate scene and loading screen), use the static method:
 
@@ -152,7 +152,7 @@ This will automatically handle:
 
 ---
 
-## 🧰 Editor Integration
+## Editor Integration
 
 Boot modules are discovered automatically after each script compilation.
 
@@ -170,7 +170,7 @@ Tools → WhiteArrow → Bootstrapping → Enable / Disable
 
 ---
 
-## 📦 Installation
+## Installation
 
 This framework is distributed as source code.  
 Simply copy it into your project.  
@@ -178,7 +178,7 @@ UPM support may be added later.
 
 ---
 
-## ✅ TODO (What’s Next)
+## TODO (What’s Next)
 
 Here are some ideas we’re considering to make Bootstrapping even more powerful and easy to use:
 
