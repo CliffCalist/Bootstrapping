@@ -46,7 +46,7 @@ public class MySceneBoot : SceneBoot
 SceneBoot is executed automatically after the scene loads.  
 The system will wait until `OnFinished()` is called.
 
-## 🔃 Intermediate Scene
+## Intermediate Scene
 To ensure complete memory release between scenes, the system can insert a lightweight empty scene before loading the actual target scene.
 > ✅ You must create this scene manually and name it exactly:
 >
