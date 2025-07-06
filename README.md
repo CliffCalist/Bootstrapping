@@ -1,97 +1,113 @@
-# Bootstrapping for Unity
+# Bootstrapping
 
-**Bootstrapping** is a modular initialization framework for Unity. It provides full control over both game startup and per-scene initialization, supports asynchronous logic, and intercepts Unity's default scene launching behavior for optimized memory and loading flow.
+Bootstrapping is a modular initialization framework for Unity that provides full control over game and scene startup. It supports asynchronous boot modules, scene-level initialization, intermediate scene handling, and optional loading screens — all designed to be MonoBehaviour-free and editor-integrated.
+
+---
 
 ## Features
-- ⚙️ Game Boot Modules — execute before any scene is loaded.
-- 🧩 Scene Boot — per-scene logic triggered automatically after scene load.
-- 🔄 Intermediate Scene — optional mechanism to fully unload memory between scenes.
-- 🧪 MonoBehaviour-free game boot modules — written as plain C# classes.
-- ✅ Execution order — supported via the `[GameBootOrder]` attribute.
-- 🖼️ Optional loading screen — shown during scene transitions.
-- 🛠️ Editor integration — registry is auto-generated, with manual override.
 
-## How It Works
+- Game Boot Modules (sync or async), with optional execution order via attribute
+- Scene Boot with completion signal
+- Intermediate Scene between transitions to ensure memory cleanup
+- Optional Loading Screen integration
+- Boot module registry is generated at edit-time to avoid runtime reflection
+- Editor menu for toggling and manual registry update
+
+---
+
+## Installing
+
+To install via UPM, add the following Git URL to your `manifest.json`:
+
+```json
+"https://github.com/CliffCalist/Bootstrapping.git"
+```
+
+---
+
+## Usage
+
 ### Game Boot Modules
-Each boot module can implement one of two interfaces:
-- `IBootModule` — for synchronous logic.
-- `IAsyncBootModule` — for async logic (e.g. `await`-based initialization).
 
-Here is an example of an async boot module:
+Game boot modules are executed before any scene is fully loaded. A module can implement either interface depending on whether asynchronous logic is required:
+
+```csharp
+public interface IBootModule
+{
+    void Run();
+}
+
+public interface IAsyncBootModule
+{
+    Task RunAsync();
+}
+```
+
+Example:
+
 ```csharp
 [GameBootOrder(10)]
 public class MyBootModule : IAsyncBootModule
 {
     public async Task RunAsync()
     {
-        await LoadSomeData();
+        await Task.Delay(500);
     }
 }
 ```
-These modules are executed **before the first scene**. Specifically, the scene defined at **Build Index 0** is loaded first, then reloaded after all game modules complete.
+
+> The initial scene (Build Index 0) is loaded automatically and reloaded after all boot modules finish.
+
+---
 
 ### Scene Boot
-Each scene must have exactly **one** scene boot. You define it by inheriting from the base class:
+
+Each scene must contain exactly one class derived from `SceneBoot`. This class runs immediately after scene load and must call `OnFinished()` to signal completion.
+
 ```csharp
 public class MySceneBoot : SceneBoot
 {
     protected override void Run()
     {
         InitializeStuff();
-        OnFinished(); // signal completion
+        OnFinished();
     }
 }
 ```
 
-SceneBoot is executed automatically after the scene loads.  
-The system will wait until `OnFinished()` is called.
+---
 
-## Intermediate Scene
-To ensure complete memory release between scenes, the system can insert a lightweight empty scene before loading the actual target scene.
-> ✅ You must create this scene manually and name it exactly:
->
-> ```
-> Intermediate
-> ```
-> ✅ It must also be included in **Build Settings**.
+### Intermediate Scene
 
-This technique avoids memory spikes during transitions and allows safe unloading.
+To ensure full unloading of the previous scene before loading a new one, the system uses a lightweight intermediate scene.
 
-## Loading Screen (Optional)
-You can display a loading screen during scene transitions. To do so, set the screen instance at runtime:
+- You must manually create an empty scene named:
+  ```
+  Intermediate
+  ```
+
+- This scene must be included in **Build Settings**
+
+---
+
+### Loading Screen
+
+Loading screens can be shown automatically during scene transitions by implementing:
+
 ```csharp
-LoadingScreenProvider.SetScreen(myScreen);
-```
-
-Your screen must implement the following interface:
-```csharp
-public class MyLoadingScreen : MonoBehaviour, ILoadingScreen
+public interface ILoadingScreen
 {
-    public bool IsShowed { get; private set; }
+    bool IsShowed { get; }
 
-    public void MarkAsDontDestroyOnLoad()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
+    void MarkAsDontDestroyOnLoad();
 
-    public void Show(bool skipAnimations, Action callback)
-    {
-        IsShowed = true;
-        // optionally play animation...
-        callback?.Invoke();
-    }
-
-    public void Hide()
-    {
-        IsShowed = false;
-        // optionally hide instantly or animate...
-    }
+    void Show(bool skipAnimations, Action callback);
+    void Hide();
 }
 ```
 
-### When to set the loading screen
-You should assign the loading screen **as early as possible**, before any scene transitions occur.  
-The recommended way is to create a game boot module that instantiates and sets the screen:
+Register your screen from a Game Boot Module:
+
 ```csharp
 [GameBootOrder(-100)]
 public class LoadingScreenInstaller : IBootModule
@@ -105,43 +121,52 @@ public class LoadingScreenInstaller : IBootModule
 }
 ```
 
-## How to Load Scenes
-To load a scene using the framework (with optional intermediate scene and loading screen), use the static method:
+---
+
+### Loading a Scene
+
+Use the built-in scene loader to transition between scenes:
+
 ```csharp
-StartCoroutine(SceneLoader.LoadScene("MyScene"));
+StartCoroutine(SceneLoader.LoadScene("Level01"));
 ```
 
-Or, if you want to skip loading screen animations:
+To skip loading screen animations:
+
 ```csharp
-StartCoroutine(SceneLoader.LoadScene("MyScene", skipShowLoadingScreenAnimations: true));
+StartCoroutine(SceneLoader.LoadScene("Level01", skipShowLoadingScreenAnimations: true));
 ```
 
-This will automatically handle:
-- showing the loading screen (if set),
-- transitioning through the intermediate scene (if applicable),
-- executing scene boot logic.
+This handles:
+- optional loading screen
+- unloading via intermediate scene
+- scene boot execution
 
-## Editor Integration
-Boot modules are discovered automatically after each script compilation.
+---
 
-You can also trigger the scan manually via:
-```
-Tools → WhiteArrow → Bootstrapping → Update Registry
-```
+### Editor Integration
 
-To enable or disable the entire boot system:
-```
-Tools → WhiteArrow → Bootstrapping → Enable / Disable
-```
+- Enable or disable the system via:
 
-## Installation
-This framework is distributed as source code.  
-Simply copy it into your project.  
-UPM support may be added later.
+  ```
+  Tools → WhiteArrow → Bootstrapping → Enable / Disable
+  ```
 
-## TODO (What’s Next)
-Here are some ideas we’re considering to make Bootstrapping even more powerful and easy to use:
-- 🔧 **Auto-create Intermediate scene** if it doesn’t exist yet.
-- 🧩 **Make Intermediate scene the build index 0** — for simpler full control without reloading.
-- 🔄 **Optional intermediate scene on scene-to-scene transitions** — not just game start.
-- 🖼️ **Assign loading screen via editor or config** — no code needed.
+- Manually update the registry:
+
+  ```
+  Tools → WhiteArrow → Bootstrapping → Update Registry
+  ```
+
+---
+
+## Roadmap
+
+- [ ] Auto-create and configure the Intermediate scene if missing
+- [ ] Use Intermediate as Build Index 0 to avoid initial scene reloading
+- [ ] Support parallel execution of Game Boot Modules with controlled dependencies
+- [ ] Framework settings window:
+  - [ ] Toggle intermediate scene usage
+  - [ ] Assign loading screen prefab via editor instead of code
+  - [ ] Define module execution order visually
+- [ ] Refactor `SceneLoader.LoadScene` into a non-coroutine async method
