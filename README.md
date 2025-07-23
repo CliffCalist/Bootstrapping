@@ -1,6 +1,6 @@
 # Bootstrapping
 
-Bootstrapping is a modular initialization framework for Unity that provides full control over game and scene startup. It supports asynchronous boot modules, scene-level initialization, intermediate scene handling, and optional loading screens — all designed to be MonoBehaviour-free and editor-integrated.
+Bootstrapping is a modular initialization framework for Unity that provides full control over game and scene startup. It supports asynchronous boot modules, scene-level initialization, preload scene handling, and optional loading screens — all designed to be MonoBehaviour-free and editor-integrated.
 
 ---
 
@@ -8,7 +8,7 @@ Bootstrapping is a modular initialization framework for Unity that provides full
 
 - Game Boot Modules (sync or async), with optional execution order via attribute
 - Scene Boot with completion signal
-- Intermediate Scene between transitions to ensure memory cleanup
+- Preload Scene between transitions to ensure memory cleanup
 - Optional Loading Screen integration
 - Boot module registry is generated at edit-time to avoid runtime reflection
 - Editor menu for toggling and manual registry update
@@ -77,13 +77,13 @@ public class MySceneBoot : SceneBoot
 
 ---
 
-### Intermediate Scene
+### Preload Scene
 
-To ensure full unloading of the previous scene before loading a new one, the system uses a lightweight intermediate scene.
+To ensure full unloading of the previous scene before loading a new one, the system uses a lightweight preload scene.
 
 - You must manually create an empty scene named:
   ```
-  Intermediate
+  Preload
   ```
 
 - This scene must be included in **Build Settings**
@@ -139,7 +139,7 @@ StartCoroutine(SceneLoader.LoadScene("Level01", skipShowLoadingScreenAnimations:
 
 This handles:
 - optional loading screen
-- unloading via intermediate scene
+- unloading via preload scene
 - scene boot execution
 
 ---
@@ -174,11 +174,11 @@ This enables better insight into boot performance and helps identify slow module
 
 ## Roadmap
 
-- [ ] Auto-create and configure the Intermediate scene if missing
-- [ ] Use Intermediate as Build Index 0 to avoid initial scene reloading
+- [ ] Auto-create and configure the Preload scene if missing
+- [ ] Use Preload as Build Index 0 to avoid initial scene reloading
 - [ ] Support parallel execution of Game Boot Modules with controlled dependencies
 - [ ] Framework settings window:
-  - [ ] Toggle intermediate scene usage
+  - [ ] Toggle Preload scene usage
   - [ ] Assign loading screen prefab via editor instead of code
   - [ ] Define module execution order visually
 - [ ] Refactor `SceneLoader.LoadScene` into a non-coroutine async method

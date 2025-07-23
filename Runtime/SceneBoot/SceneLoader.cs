@@ -7,7 +7,7 @@ namespace WhiteArrow.Bootstraping
 {
     public static class SceneLoader
     {
-        public const string INTERMEDIATE_SCENE_NAME = "Intermediate";
+        public const string INTERMEDIATE_SCENE_NAME = "Preload";
 
 
 
