@@ -162,7 +162,7 @@ This handles:
 
 ## Profiling Support
 
-Bootstrapping uses [StackedProfiling](https://github.com/white-arrow/stacked-profiling.git) for custom profiling of module execution.
+Bootstrapping uses [StackedProfiling](https://github.com/CliffCalist/stacked-profiling.git) for custom profiling of module execution.
 
 - Each Game Boot Module is wrapped in a profiler sample with its type name
 - Scene Boot classes are also profiled
