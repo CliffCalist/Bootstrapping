@@ -77,16 +77,16 @@ public class MySceneBoot : SceneBoot
 
 ---
 
-### Preload Scene
+### Preload Scene (required)
 
-To ensure full unloading of the previous scene before loading a new one, the system uses a lightweight preload scene.
+Bootstrapping requires a scene named `Preload` to act as an intermediate scene between unloading the current scene and loading the next one.  
+Its purpose is to reduce memory spikes by ensuring the previous scene is fully unloaded before the next one begins loading.
 
-- You must manually create an empty scene named:
-  ```
-  Preload
-  ```
+If the `Preload` scene is missing or not added to Build Settings, the editor will automatically show a dialog and generate it.
 
-- This scene must be included in **Build Settings**
+You can also manually trigger its generation from the Unity menu:  
+`Tools → WhiteArrow → Bootstrapping → Generate Preload Scene`
+(Only available when the scene is missing or misconfigured)
 
 ---
 

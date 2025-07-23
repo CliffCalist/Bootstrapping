@@ -52,5 +52,19 @@ namespace WhiteArrowEditor.Bootstraping
             EditorBootSettingsProvider.Save();
             EditorUtility.DisplayDialog("Success", "Bootstrapping registry updated successfully.", "OK");
         }
+
+
+
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Generate Preload Scene", true)]
+        private static bool ValidateGeneratePreloadScene()
+        {
+            return !PreloadSceneUtility.IsValid();
+        }
+
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Generate Preload Scene")]
+        private static void GeneratePreloadScene()
+        {
+            PreloadSceneUtility.GeneratePreloadScene();
+        }
     }
 }
