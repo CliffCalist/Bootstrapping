@@ -17,7 +17,7 @@ namespace WhiteArrowEditor.Bootstraping
                 return;
 
             if (!PreloadSceneUtility.IsValid())
-                PreloadSceneUtility.ShowMissingPreloadSceneDialog();
+                PreloadSceneUtility.ShowFixDialog();
         }
     }
 }

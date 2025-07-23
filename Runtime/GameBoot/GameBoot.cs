@@ -56,7 +56,8 @@ namespace WhiteArrow.Bootstraping
             Debug.Log("<color=green>All game modules executed.</color>");
             Profiler.LogSample("GameBoot");
 
-            var loadSceneCoroutine = SceneLoader.LoadScene(SceneManager.GetActiveScene().name);
+            var startSceneName = SceneManager.GetActiveScene().name;
+            var loadSceneCoroutine = SceneLoader.LoadScene(startSceneName);
             Coroutines.Launch(loadSceneCoroutine);
         }
     }

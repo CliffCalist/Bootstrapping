@@ -55,16 +55,16 @@ namespace WhiteArrowEditor.Bootstraping
 
 
 
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Generate Preload Scene", true)]
-        private static bool ValidateGeneratePreloadScene()
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Fix Preload Scene Issue", true)]
+        private static bool ValidateFixPreloadSceneIssue()
         {
             return !PreloadSceneUtility.IsValid();
         }
 
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Generate Preload Scene")]
-        private static void GeneratePreloadScene()
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Fix Preload Scene Issue")]
+        private static void FixPreloadSceneIssue()
         {
-            PreloadSceneUtility.GeneratePreloadScene();
+            PreloadSceneUtility.FixIssue();
         }
     }
 }

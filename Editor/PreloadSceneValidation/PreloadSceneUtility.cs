@@ -15,22 +15,38 @@ namespace WhiteArrowEditor.Bootstraping
 
         public static bool IsValid()
         {
+            if (EditorBuildSettings.scenes.Length <= 0)
+                return false;
+
+            var firstScene = EditorBuildSettings.scenes[0];
             var name = SceneLoader.INTERMEDIATE_SCENE_NAME;
-            return EditorBuildSettings.scenes.Any(scene => scene.path.Contains($"/{name}.unity"));
+            return firstScene.path.Contains($"/{name}.unity");
         }
 
 
 
-        public static void ShowMissingPreloadSceneDialog()
+        public static void ShowFixDialog()
         {
-            const string title = "Missing Preload Scene";
-            const string message = "The preload scene is missing from Build Settings.\n\nIt will now be automatically created and added.";
+            const string title = "Bootstraping Issue";
+            const string message = "The preload scene is either missing or not placed at index 0 in Build Settings.\n\nIt will now be automatically fixed.";
             EditorUtility.DisplayDialog(title, message, "OK");
-            GeneratePreloadScene();
+            FixIssue();
         }
 
 
-        public static void GeneratePreloadScene()
+
+        public static void FixIssue()
+        {
+            var sceneExists = EditorBuildSettings.scenes.Any(s => s.path == PRELOAD_SCENE_OUTPUT_PATH);
+            if (!sceneExists)
+                GeneratePreloadScene();
+
+            AddToBuildSettings(PRELOAD_SCENE_OUTPUT_PATH);
+        }
+
+
+
+        private static void GeneratePreloadScene()
         {
             var templatePath = FindTemplatePath();
             if (string.IsNullOrEmpty(templatePath))
@@ -46,7 +62,6 @@ namespace WhiteArrowEditor.Bootstraping
             }
 
             Debug.Log($"Preload scene created at {PRELOAD_TEMPLATE_NAME}");
-            AddToBuildSettings(PRELOAD_SCENE_OUTPUT_PATH);
             AssetDatabase.Refresh();
         }
 
@@ -64,17 +79,20 @@ namespace WhiteArrowEditor.Bootstraping
             return null;
         }
 
+
+
         private static void AddToBuildSettings(string scenePath)
         {
             var scenes = EditorBuildSettings.scenes.ToList();
 
-            if (scenes.Any(s => s.path == scenePath))
+            if (scenes.Count > 0 && scenes[0].path == scenePath)
                 return;
 
-            scenes.Add(new EditorBuildSettingsScene(scenePath, true));
+            scenes.RemoveAll(s => s.path == scenePath);
+            scenes.Insert(0, new EditorBuildSettingsScene(scenePath, true));
             EditorBuildSettings.scenes = scenes.ToArray();
 
-            Debug.Log("Preload scene added to Build Settings.");
+            Debug.Log("Preload scene added to Build Settings at index 0.");
         }
     }
 }
