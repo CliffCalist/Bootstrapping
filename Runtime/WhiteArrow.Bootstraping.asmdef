@@ -2,8 +2,8 @@
     "name": "WhiteArrow.Bootstraping",
     "rootNamespace": "WhiteArrow.Bootstraping",
     "references": [
-        "GUID:e3a1b3532d5ca4d54be21cb53828b508",
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+        "GUID:2d89679e3f95447c08566e7930b20da7",
+        "GUID:e3a1b3532d5ca4d54be21cb53828b508"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

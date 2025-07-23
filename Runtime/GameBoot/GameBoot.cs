@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WhiteArrow.StackedProfiling;
 
 namespace WhiteArrow.Bootstraping
 {
@@ -32,17 +33,28 @@ namespace WhiteArrow.Bootstraping
             Debug.Log("<b>Game is bootstraping...</b>");
 
             var modules = BootSettingsProvider.CreateModules();
+            Profiler.StartSample("GameBoot");
+
             foreach (var module in modules)
             {
                 var moduleName = module.GetType().Name;
 
                 Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
+                Profiler.StartSample(moduleName);
+
                 await module.RunAsync();
+
+                Profiler.StopSample(moduleName);
+
                 Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
+                Profiler.LogSample(moduleName);
             }
 
+            Profiler.StopSample("GameBoot");
             IsLaunched = true;
+
             Debug.Log("<color=green>All game modules executed.</color>");
+            Profiler.LogSample("GameBoot");
 
             var loadSceneCoroutine = SceneLoader.LoadScene(SceneManager.GetActiveScene().name);
             Coroutines.Launch(loadSceneCoroutine);

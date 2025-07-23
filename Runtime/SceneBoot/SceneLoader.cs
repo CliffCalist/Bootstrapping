@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WhiteArrow.StackedProfiling;
 
 namespace WhiteArrow.Bootstraping
 {
@@ -65,8 +66,14 @@ namespace WhiteArrow.Bootstraping
             }
             else
             {
+                var bootstrapName = sceneBootstrap.GetType().Name;
+                Profiler.StartSample(bootstrapName);
+
                 sceneBootstrap.Run();
                 yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
+
+                Profiler.StopSample(bootstrapName);
+                Profiler.LogSample(bootstrapName);
             }
         }
     }
