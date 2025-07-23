@@ -174,7 +174,7 @@ This enables better insight into boot performance and helps identify slow module
 
 ## Roadmap
 
-- [ ] Auto-create and configure the Preload scene if missing
+- [x] Auto-create and configure the Preload scene if missing
 - [ ] Use Preload as Build Index 0 to avoid initial scene reloading
 - [ ] Support parallel execution of Game Boot Modules with controlled dependencies
 - [ ] Framework settings window:
