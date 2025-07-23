@@ -160,6 +160,18 @@ This handles:
 
 ---
 
+## Profiling Support
+
+Bootstrapping uses [StackedProfiling](https://github.com/white-arrow/stacked-profiling.git) for custom profiling of module execution.
+
+- Each Game Boot Module is wrapped in a profiler sample with its type name
+- Scene Boot classes are also profiled
+- A global "GameBoot" sample wraps the entire game boot process
+
+This enables better insight into boot performance and helps identify slow modules independently of Unity’s built-in timeline profiler.
+
+---
+
 ## Roadmap
 
 - [ ] Auto-create and configure the Intermediate scene if missing
