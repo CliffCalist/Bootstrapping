@@ -7,7 +7,17 @@ namespace WhiteArrow.Bootstraping
 {
     public static class SceneLoader
     {
+        private static ILoadingScreen s_loadingScreen;
+
+
         public const string INTERMEDIATE_SCENE_NAME = "Preload";
+
+
+
+        internal static void SetLoadingScreen(ILoadingScreen screen)
+        {
+            s_loadingScreen = screen;
+        }
 
 
 
@@ -22,17 +32,17 @@ namespace WhiteArrow.Bootstraping
             GameBoot.ThrowIfNotLaunched();
 
             var loadingStartTime = 0f;
-            if (LoadingScreenProvider.Screen != null && !LoadingScreenProvider.Screen.IsShowed)
+            if (s_loadingScreen != null && !s_loadingScreen.IsShowed)
             {
                 if (!skipShowLoadingScreenAnimations)
                 {
                     var isScreenShowed = false;
-                    LoadingScreenProvider.Screen.Show(false, () => isScreenShowed = true);
+                    s_loadingScreen.Show(false, () => isScreenShowed = true);
 
                     var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
                     yield return waitWhileScreenShowing;
                 }
-                else LoadingScreenProvider.Screen.Show(true, null);
+                else s_loadingScreen.Show(true, null);
 
                 loadingStartTime = Time.time;
             }
@@ -45,7 +55,7 @@ namespace WhiteArrow.Bootstraping
 
             yield return WaitBootFinish();
 
-            if (LoadingScreenProvider.Screen != null && LoadingScreenProvider.Screen.IsShowed)
+            if (s_loadingScreen != null && s_loadingScreen.IsShowed)
             {
                 var elapsedTime = Time.time - loadingStartTime;
                 var remainingLoadingTime = BootSettingsProvider.Settings.MinLoadingScreenTime - elapsedTime;
@@ -53,7 +63,7 @@ namespace WhiteArrow.Bootstraping
                 if (remainingLoadingTime > 0f)
                     yield return new WaitForSecondsRealtime(remainingLoadingTime);
 
-                LoadingScreenProvider.Screen.Hide();
+                s_loadingScreen.Hide();
             }
         }
 

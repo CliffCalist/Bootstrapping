@@ -49,7 +49,7 @@ namespace WhiteArrow.Bootstraping
                 var screen = UnityEngine.Object.Instantiate(screenPrefabAsMono) as ILoadingScreen;
 
                 screen.MarkAsDontDestroyOnLoad();
-                LoadingScreenProvider.SetScreen(screen);
+                SceneLoader.SetLoadingScreen(screen);
                 screen.Show(true, null);
             }
         }
