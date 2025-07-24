@@ -31,31 +31,10 @@ namespace WhiteArrow.Bootstraping
                 return;
 
             Debug.Log("<b>Game is bootstraping...</b>");
+
             PrepareLoadingScreen();
-
-            var modules = BootSettingsProvider.Settings.CreateModules();
-            Profiler.StartSample("GameBoot");
-
-            foreach (var module in modules)
-            {
-                var moduleName = module.GetType().Name;
-
-                Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
-                Profiler.StartSample(moduleName);
-
-                await module.RunAsync();
-
-                Profiler.StopSample(moduleName);
-
-                Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
-                Profiler.LogSample(moduleName);
-            }
-
-            Profiler.StopSample("GameBoot");
+            await ExecuteModules();
             IsLaunched = true;
-
-            Debug.Log("<color=green>All game modules executed.</color>");
-            Profiler.LogSample("GameBoot");
 
             var startSceneName = SceneManager.GetActiveScene().name;
             var loadSceneCoroutine = SceneLoader.LoadScene(startSceneName);
@@ -73,6 +52,30 @@ namespace WhiteArrow.Bootstraping
                 LoadingScreenProvider.SetScreen(screen);
                 screen.Show(true, null);
             }
+        }
+
+        private static async Task ExecuteModules()
+        {
+            var modules = BootSettingsProvider.Settings.CreateModules();
+            Profiler.StartSample("GameBootModules");
+
+            foreach (var module in modules)
+            {
+                var moduleName = module.GetType().Name;
+
+                Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
+                Profiler.StartSample(moduleName);
+
+                await module.RunAsync();
+
+                Profiler.StopSample(moduleName);
+
+                Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
+                Profiler.LogSample(moduleName);
+            }
+
+            Profiler.StopSample("GameBootModules");
+            Debug.Log("<color=green>All game modules executed.</color>");
         }
     }
 }
