@@ -31,22 +31,8 @@ namespace WhiteArrow.Bootstraping
             BootSettingsProvider.Settings.ThrowIfNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
-            var loadingStartTime = 0f;
-            if (s_loadingScreen != null && !s_loadingScreen.IsShowed)
-            {
-                if (!skipShowLoadingScreenAnimations)
-                {
-                    var isScreenShowed = false;
-                    s_loadingScreen.Show(false, () => isScreenShowed = true);
-
-                    var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
-                    yield return waitWhileScreenShowing;
-                }
-                else s_loadingScreen.Show(true, null);
-
-                loadingStartTime = Time.time;
-            }
-
+            yield return TryShowLoadingScreen(skipShowLoadingScreenAnimations);
+            var loadingStartTime = Time.time;
             yield return LoadIntermediateScene();
 
             Debug.Log($"<color=yellow>Loading target scene: {sceneName}</color>");
@@ -54,18 +40,9 @@ namespace WhiteArrow.Bootstraping
             Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
             yield return WaitBootFinish();
-
-            if (s_loadingScreen != null && s_loadingScreen.IsShowed)
-            {
-                var elapsedTime = Time.time - loadingStartTime;
-                var remainingLoadingTime = BootSettingsProvider.Settings.MinLoadingScreenTime - elapsedTime;
-
-                if (remainingLoadingTime > 0f)
-                    yield return new WaitForSecondsRealtime(remainingLoadingTime);
-
-                s_loadingScreen.Hide();
-            }
+            yield return TryHideShowLoadingScreen(loadingStartTime);
         }
+
 
 
         private static IEnumerator LoadIntermediateScene()
@@ -79,7 +56,7 @@ namespace WhiteArrow.Bootstraping
 
         private static IEnumerator WaitBootFinish()
         {
-            var sceneBootstrap = UnityEngine.Object.FindAnyObjectByType<SceneBoot>();
+            var sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
             if (sceneBootstrap == null)
             {
                 Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
@@ -96,6 +73,34 @@ namespace WhiteArrow.Bootstraping
                 Profiler.StopSample(bootstrapName);
                 Profiler.LogSample(bootstrapName);
             }
+        }
+
+
+
+        private static IEnumerator TryShowLoadingScreen(bool skipShowLoadingScreenAnimations)
+        {
+            if (s_loadingScreen == null || !s_loadingScreen.IsShowed)
+                yield break;
+
+            var isScreenShowed = false;
+            s_loadingScreen.Show(skipShowLoadingScreenAnimations, () => isScreenShowed = true);
+
+            var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
+            yield return waitWhileScreenShowing;
+        }
+
+        private static IEnumerator TryHideShowLoadingScreen(float showScreenTime)
+        {
+            if (s_loadingScreen == null || s_loadingScreen.IsShowed)
+                yield break;
+
+            var elapsedTime = Time.time - showScreenTime;
+            var remainingLoadingTime = BootSettingsProvider.Settings.MinLoadingScreenTime - elapsedTime;
+
+            if (remainingLoadingTime > 0f)
+                yield return new WaitForSecondsRealtime(remainingLoadingTime);
+
+            s_loadingScreen.Hide();
         }
     }
 }
