@@ -13,7 +13,7 @@ namespace WhiteArrowEditor.Bootstraping
 
         private static void OnScriptsCompiled(object value)
         {
-            if (!EditorBootSettingsProvider.Settings.BootstrapingIsEnabled)
+            if (!EditorBootSettingsProvider.Settings.IsEnabled)
                 return;
 
             if (!PreloadSceneUtility.IsValid())

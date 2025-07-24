@@ -15,7 +15,7 @@ namespace WhiteArrow.Bootstraping
             get
             {
                 LoadSettings();
-                return s_settings.BootstrapingIsEnabled;
+                return s_settings.IsEnabled;
             }
         }
 

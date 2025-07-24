@@ -5,7 +5,7 @@ namespace WhiteArrow.Bootstraping
 {
     public class BootSettings : ScriptableObject
     {
-        public bool BootstrapingIsEnabled = true;
+        public bool IsEnabled = true;
         public List<string> ModuleTypeNames = new();
         [SerializeField] private InterfaceField<ILoadingScreen> _loadingScreen;
 
