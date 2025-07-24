@@ -9,10 +9,6 @@ namespace WhiteArrowEditor.Bootstraping
     [InitializeOnLoad]
     public class BootModulesRegistryUpdater
     {
-        private static BootstrapingSettings s_settings => EditorBootSettingsProvider.Settings;
-
-
-
         private BootModulesRegistryUpdater()
         {
             CompilationPipeline.assemblyCompilationFinished += OnScriptsCompiled;
@@ -36,9 +32,9 @@ namespace WhiteArrowEditor.Bootstraping
 
             var moduleTypeAssemblyNames = moduleTypes.Select(t => t.AssemblyQualifiedName).ToList();
 
-            if (!moduleTypeAssemblyNames.SequenceEqual(s_settings.ModuleTypeNames))
+            if (!moduleTypeAssemblyNames.SequenceEqual(EditorBootSettingsProvider.Settings.ModuleTypeNames))
             {
-                s_settings.ModuleTypeNames = moduleTypeAssemblyNames;
+                EditorBootSettingsProvider.Settings.ModuleTypeNames = moduleTypeAssemblyNames;
                 EditorBootSettingsProvider.Save();
 
                 var moduleTypeNames = moduleTypes.Select(t => t.FullName);

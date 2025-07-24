@@ -1,24 +1,19 @@
 using UnityEditor;
-using WhiteArrow.Bootstraping;
 
 namespace WhiteArrowEditor.Bootstraping
 {
     public static class BootstrappingMenuItems
     {
-        private static BootstrapingSettings s_settings => EditorBootSettingsProvider.Settings;
-
-
-
         [MenuItem("Tools/WhiteArrow/Bootstraping/Enable", true)]
         private static bool ValidateEnableBootstraping()
         {
-            return !s_settings.BootstrapingIsEnabled;
+            return !EditorBootSettingsProvider.Settings.BootstrapingIsEnabled;
         }
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Enable")]
         private static void EnableBootstraping()
         {
-            s_settings.BootstrapingIsEnabled = true;
+            EditorBootSettingsProvider.Settings.BootstrapingIsEnabled = true;
             EditorBootSettingsProvider.Save();
         }
 
@@ -27,13 +22,13 @@ namespace WhiteArrowEditor.Bootstraping
         [MenuItem("Tools/WhiteArrow/Bootstraping/Disable", true)]
         private static bool ValidateDisableBootstraping()
         {
-            return s_settings.BootstrapingIsEnabled;
+            return EditorBootSettingsProvider.Settings.BootstrapingIsEnabled;
         }
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Disable")]
         private static void DisableBootstraping()
         {
-            s_settings.BootstrapingIsEnabled = false;
+            EditorBootSettingsProvider.Settings.BootstrapingIsEnabled = false;
             EditorBootSettingsProvider.Save();
         }
 
