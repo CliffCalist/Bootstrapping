@@ -19,6 +19,15 @@ namespace WhiteArrow.Bootstraping
             }
         }
 
+        public static float MinLoadingScreenTime
+        {
+            get
+            {
+                LoadSettings();
+                return s_settings.MinLoadingScreenTime;
+            }
+        }
+
         public static ILoadingScreen LoadingScreen
         {
             get

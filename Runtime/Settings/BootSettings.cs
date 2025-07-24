@@ -8,6 +8,7 @@ namespace WhiteArrow.Bootstraping
     {
         [SerializeField] private bool _isEnabled = true;
         [SerializeField, HideInInspector] private List<string> _moduleTypeNames = new();
+        [SerializeField, Min(0)] private float _minLoadingScreenTime = 3f;
         [SerializeField] private InterfaceField<ILoadingScreen> _loadingScreen;
 
 
@@ -26,6 +27,12 @@ namespace WhiteArrow.Bootstraping
         {
             get => _moduleTypeNames;
             internal set => _moduleTypeNames = value.ToList();
+        }
+
+        public float MinLoadingScreenTime
+        {
+            get => _minLoadingScreenTime;
+            internal set => _minLoadingScreenTime = value;
         }
 
         public ILoadingScreen LoadingScreen

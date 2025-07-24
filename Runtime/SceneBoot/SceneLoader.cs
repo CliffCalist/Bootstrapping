@@ -21,6 +21,7 @@ namespace WhiteArrow.Bootstraping
             BootSettingsProvider.ThrowIsNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
+            var loadingStartTime = 0f;
             if (LoadingScreenProvider.Screen != null && !LoadingScreenProvider.Screen.IsShowed)
             {
                 if (!skipShowLoadingScreenAnimations)
@@ -32,6 +33,8 @@ namespace WhiteArrow.Bootstraping
                     yield return waitWhileScreenShowing;
                 }
                 else LoadingScreenProvider.Screen.Show(true, null);
+
+                loadingStartTime = Time.time;
             }
 
             yield return LoadIntermediateScene();
@@ -43,7 +46,15 @@ namespace WhiteArrow.Bootstraping
             yield return WaitBootFinish();
 
             if (LoadingScreenProvider.Screen != null && LoadingScreenProvider.Screen.IsShowed)
+            {
+                var elapsedTime = Time.time - loadingStartTime;
+                var remainingLoadingTime = BootSettingsProvider.MinLoadingScreenTime - elapsedTime;
+
+                if (remainingLoadingTime > 0f)
+                    yield return new WaitForSecondsRealtime(remainingLoadingTime);
+
                 LoadingScreenProvider.Screen.Hide();
+            }
         }
 
 
