@@ -18,7 +18,7 @@ namespace WhiteArrow.Bootstraping
         /// <returns>IEnumerator for coroutine execution.</returns>
         public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
-            BootSettingsProvider.ThrowIsNotEnabled();
+            BootSettingsProvider.Settings.ThrowIfNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
             var loadingStartTime = 0f;
@@ -48,7 +48,7 @@ namespace WhiteArrow.Bootstraping
             if (LoadingScreenProvider.Screen != null && LoadingScreenProvider.Screen.IsShowed)
             {
                 var elapsedTime = Time.time - loadingStartTime;
-                var remainingLoadingTime = BootSettingsProvider.MinLoadingScreenTime - elapsedTime;
+                var remainingLoadingTime = BootSettingsProvider.Settings.MinLoadingScreenTime - elapsedTime;
 
                 if (remainingLoadingTime > 0f)
                     yield return new WaitForSecondsRealtime(remainingLoadingTime);

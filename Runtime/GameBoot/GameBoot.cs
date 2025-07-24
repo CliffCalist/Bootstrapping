@@ -27,13 +27,13 @@ namespace WhiteArrow.Bootstraping
 
         private static async Task RunAsync()
         {
-            if (BootSettingsProvider.LogIsNotEnabled())
+            if (BootSettingsProvider.Settings.LogIfNotEnabled())
                 return;
 
             Debug.Log("<b>Game is bootstraping...</b>");
             PrepareLoadingScreen();
 
-            var modules = BootSettingsProvider.CreateModules();
+            var modules = BootSettingsProvider.Settings.CreateModules();
             Profiler.StartSample("GameBoot");
 
             foreach (var module in modules)
@@ -64,9 +64,9 @@ namespace WhiteArrow.Bootstraping
 
         private static void PrepareLoadingScreen()
         {
-            if (BootSettingsProvider.LoadingScreen != null)
+            if (BootSettingsProvider.Settings.LoadingScreen != null)
             {
-                var screenPrefabAsMono = BootSettingsProvider.LoadingScreen as MonoBehaviour;
+                var screenPrefabAsMono = BootSettingsProvider.Settings.LoadingScreen as MonoBehaviour;
                 var screen = UnityEngine.Object.Instantiate(screenPrefabAsMono) as ILoadingScreen;
 
                 screen.MarkAsDontDestroyOnLoad();
