@@ -7,7 +7,7 @@ namespace WhiteArrow.Bootstraping
     public class BootSettings : ScriptableObject
     {
         [SerializeField] private bool _isEnabled = true;
-        [SerializeField] private List<string> _moduleTypeNames = new();
+        [SerializeField, HideInInspector] private List<string> _moduleTypeNames = new();
         [SerializeField] private InterfaceField<ILoadingScreen> _loadingScreen;
 
 
