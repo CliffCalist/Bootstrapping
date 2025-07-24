@@ -9,7 +9,7 @@ Bootstrapping is a modular initialization framework for Unity that provides full
 - Game Boot Modules (sync or async), with optional execution order via attribute
 - Scene Boot with completion signal
 - Preload Scene between transitions to ensure memory cleanup
-- Optional Loading Screen integration
+- Optional Loading Screen integration with minimum display time
 - Boot module registry is generated at edit-time to avoid runtime reflection
 - Editor menu for toggling and manual registry update
 
@@ -17,11 +17,11 @@ Bootstrapping is a modular initialization framework for Unity that provides full
 
 ## Installing
 
-To install via UPM, add the following Git URL to your `manifest.json`:
+To install via UPM, use "Install package from git URL" and add the following:
 
-```json
-"https://github.com/CliffCalist/Bootstrapping.git"
-```
+- https://github.com/CliffCalist/stacked-profiling.git
+- https://github.com/CliffCalist/Unity-Tools.git
+- https://github.com/CliffCalist/Bootstrapping.git
 
 ---
 
@@ -55,8 +55,6 @@ public class MyBootModule : IAsyncBootModule
     }
 }
 ```
-
-> The initial scene (Build Index 0) is loaded automatically and reloaded after all boot modules finish.
 
 ---
 
@@ -98,28 +96,15 @@ Loading screens can be shown automatically during scene transitions by implement
 public interface ILoadingScreen
 {
     bool IsShowed { get; }
-
-    void MarkAsDontDestroyOnLoad();
-
     void Show(bool skipAnimations, Action callback);
     void Hide();
 }
 ```
 
-Register your screen from a Game Boot Module:
+Assign your loading screen prefab in `Assets/Resources/BootSettings`.  
+This is enough for the system to automatically instantiate and manage the screen.
 
-```csharp
-[GameBootOrder(-100)]
-public class LoadingScreenInstaller : IBootModule
-{
-    public void Run()
-    {
-        var prefab = Resources.Load<MyLoadingScreen>("UI/LoadingScreen");
-        var instance = Object.Instantiate(prefab);
-        LoadingScreenProvider.SetScreen(instance);
-    }
-}
-```
+You can also configure `_minLoadingScreenTime` in the same asset to ensure the screen is visible long enough for a smooth UX (especially when loading is very fast).
 
 ---
 
@@ -173,6 +158,6 @@ This enables better insight into boot performance and helps identify slow module
 - [ ] Support parallel execution of Game Boot Modules with controlled dependencies
 - [ ] Framework settings window:
   - [ ] Toggle Preload scene usage
-  - [ ] Assign loading screen prefab via editor instead of code
+  - [x] Assign loading screen prefab via editor instead of code
   - [ ] Define module execution order visually
 - [ ] Refactor `SceneLoader.LoadScene` into a non-coroutine async method
