@@ -6,38 +6,51 @@ namespace WhiteArrowEditor.Bootstraping
 {
     public static class EditorBootSettingsProvider
     {
+        private static BootstrapingSettings s_settings;
+
+
+
         public const string RESOURCES_FOLDER_PATH = "Assets/Resources/";
-        public const string REGISTRY_ASSET_PATH = RESOURCES_FOLDER_PATH + BootstrapingSettings.FILE_NAME + ".asset";
-
-
-        private static BootstrapingSettings _cached;
+        public const string SETTINGS_ASSET_PATH = RESOURCES_FOLDER_PATH + BootstrapingSettings.FILE_NAME + ".asset";
 
 
 
-        public static BootstrapingSettings Load()
+        public static BootstrapingSettings Settings
         {
-            if (_cached != null)
-                return _cached;
+            get
+            {
+                if (s_settings == null)
+                    Load();
 
-            _cached = AssetDatabase.LoadAssetAtPath<BootstrapingSettings>(REGISTRY_ASSET_PATH);
+                return s_settings;
+            }
+        }
 
-            if (_cached == null)
+
+
+        private static void Load()
+        {
+            if (s_settings != null)
+                return;
+
+            s_settings = AssetDatabase.LoadAssetAtPath<BootstrapingSettings>(SETTINGS_ASSET_PATH);
+
+            if (s_settings == null)
             {
                 if (!AssetDatabase.IsValidFolder(RESOURCES_FOLDER_PATH))
                     Project.CreateFullFolderPath(RESOURCES_FOLDER_PATH);
 
-                _cached = ScriptableObject.CreateInstance<BootstrapingSettings>();
-                AssetDatabase.CreateAsset(_cached, REGISTRY_ASSET_PATH);
+                s_settings = ScriptableObject.CreateInstance<BootstrapingSettings>();
+                AssetDatabase.CreateAsset(s_settings, SETTINGS_ASSET_PATH);
 
-                Debug.Log($"{REGISTRY_ASSET_PATH} asset created.");
+                Debug.Log($"{SETTINGS_ASSET_PATH} asset created in {RESOURCES_FOLDER_PATH}.");
+                EditorUtility.DisplayDialog("Bootstraping", "Bootstraping settings created.", "OK");
             }
-
-            return _cached;
         }
 
         public static void Save()
         {
-            EditorUtility.SetDirty(_cached);
+            EditorUtility.SetDirty(s_settings);
             AssetDatabase.SaveAssets();
         }
     }

@@ -5,20 +5,20 @@ namespace WhiteArrowEditor.Bootstraping
 {
     public static class BootstrappingMenuItems
     {
-        private static BootstrapingSettings _bootModuleRegistry => EditorBootSettingsProvider.Load();
+        private static BootstrapingSettings s_settings => EditorBootSettingsProvider.Settings;
 
 
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Enable", true)]
         private static bool ValidateEnableBootstraping()
         {
-            return !_bootModuleRegistry.BootstrapingIsEnabled;
+            return !s_settings.BootstrapingIsEnabled;
         }
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Enable")]
         private static void EnableBootstraping()
         {
-            _bootModuleRegistry.BootstrapingIsEnabled = true;
+            s_settings.BootstrapingIsEnabled = true;
             EditorBootSettingsProvider.Save();
         }
 
@@ -27,13 +27,13 @@ namespace WhiteArrowEditor.Bootstraping
         [MenuItem("Tools/WhiteArrow/Bootstraping/Disable", true)]
         private static bool ValidateDisableBootstraping()
         {
-            return _bootModuleRegistry.BootstrapingIsEnabled;
+            return s_settings.BootstrapingIsEnabled;
         }
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Disable")]
         private static void DisableBootstraping()
         {
-            _bootModuleRegistry.BootstrapingIsEnabled = false;
+            s_settings.BootstrapingIsEnabled = false;
             EditorBootSettingsProvider.Save();
         }
 

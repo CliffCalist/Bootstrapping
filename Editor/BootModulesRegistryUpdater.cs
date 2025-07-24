@@ -9,7 +9,7 @@ namespace WhiteArrowEditor.Bootstraping
     [InitializeOnLoad]
     public class BootModulesRegistryUpdater
     {
-        private static BootstrapingSettings _settings => EditorBootSettingsProvider.Load();
+        private static BootstrapingSettings s_settings => EditorBootSettingsProvider.Settings;
 
 
 
@@ -36,9 +36,9 @@ namespace WhiteArrowEditor.Bootstraping
 
             var moduleTypeAssemblyNames = moduleTypes.Select(t => t.AssemblyQualifiedName).ToList();
 
-            if (!moduleTypeAssemblyNames.SequenceEqual(_settings.ModuleTypeNames))
+            if (!moduleTypeAssemblyNames.SequenceEqual(s_settings.ModuleTypeNames))
             {
-                _settings.ModuleTypeNames = moduleTypeAssemblyNames;
+                s_settings.ModuleTypeNames = moduleTypeAssemblyNames;
                 EditorBootSettingsProvider.Save();
 
                 var moduleTypeNames = moduleTypes.Select(t => t.FullName);

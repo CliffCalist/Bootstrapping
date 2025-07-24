@@ -9,7 +9,7 @@ namespace WhiteArrowEditor.Bootstraping
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            if (!EditorBootSettingsProvider.Load().BootstrapingIsEnabled)
+            if (!EditorBootSettingsProvider.Settings.BootstrapingIsEnabled)
                 return;
 
             if (!PreloadSceneUtility.IsValid())

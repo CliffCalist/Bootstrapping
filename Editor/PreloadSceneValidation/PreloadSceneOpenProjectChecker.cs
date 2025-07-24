@@ -14,7 +14,7 @@ namespace WhiteArrowEditor.Bootstraping
         {
             EditorApplication.update -= ValidateIfNeeded;
 
-            if (!EditorBootSettingsProvider.Load().BootstrapingIsEnabled)
+            if (!EditorBootSettingsProvider.Settings.BootstrapingIsEnabled)
                 return;
 
             if (!PreloadSceneUtility.IsValid())
