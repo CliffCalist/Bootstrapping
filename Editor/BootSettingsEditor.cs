@@ -4,7 +4,7 @@ using WhiteArrow.Bootstraping;
 
 namespace WhiteArrowEditor.Bootstraping
 {
-    [CustomEditor(typeof(BootSettings))]
+    [CustomEditor(typeof(BootstrapingSettings))]
     public class BootSettingsEditor : Editor
     {
         public override void OnInspectorGUI()

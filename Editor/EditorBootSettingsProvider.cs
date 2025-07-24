@@ -7,26 +7,26 @@ namespace WhiteArrowEditor.Bootstraping
     public static class EditorBootSettingsProvider
     {
         public const string RESOURCES_FOLDER_PATH = "Assets/Resources/";
-        public const string REGISTRY_ASSET_PATH = RESOURCES_FOLDER_PATH + BootSettings.FILE_NAME + ".asset";
+        public const string REGISTRY_ASSET_PATH = RESOURCES_FOLDER_PATH + BootstrapingSettings.FILE_NAME + ".asset";
 
 
-        private static BootSettings _cached;
+        private static BootstrapingSettings _cached;
 
 
 
-        public static BootSettings Load()
+        public static BootstrapingSettings Load()
         {
             if (_cached != null)
                 return _cached;
 
-            _cached = AssetDatabase.LoadAssetAtPath<BootSettings>(REGISTRY_ASSET_PATH);
+            _cached = AssetDatabase.LoadAssetAtPath<BootstrapingSettings>(REGISTRY_ASSET_PATH);
 
             if (_cached == null)
             {
                 if (!AssetDatabase.IsValidFolder(RESOURCES_FOLDER_PATH))
                     Project.CreateFullFolderPath(RESOURCES_FOLDER_PATH);
 
-                _cached = ScriptableObject.CreateInstance<BootSettings>();
+                _cached = ScriptableObject.CreateInstance<BootstrapingSettings>();
                 AssetDatabase.CreateAsset(_cached, REGISTRY_ASSET_PATH);
 
                 Debug.Log($"{REGISTRY_ASSET_PATH} asset created.");

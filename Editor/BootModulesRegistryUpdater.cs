@@ -9,7 +9,7 @@ namespace WhiteArrowEditor.Bootstraping
     [InitializeOnLoad]
     public class BootModulesRegistryUpdater
     {
-        private static BootSettings _settings => EditorBootSettingsProvider.Load();
+        private static BootstrapingSettings _settings => EditorBootSettingsProvider.Load();
 
 
 

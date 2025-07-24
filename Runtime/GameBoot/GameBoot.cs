@@ -27,12 +27,12 @@ namespace WhiteArrow.Bootstraping
 
         private static async Task RunAsync()
         {
-            if (BootSettingsProvider.LogIsNotEnabled())
+            if (BootstrapingSettingsProvider.LogIsNotEnabled())
                 return;
 
             Debug.Log("<b>Game is bootstraping...</b>");
 
-            var modules = BootSettingsProvider.CreateModules();
+            var modules = BootstrapingSettingsProvider.CreateModules();
             Profiler.StartSample("GameBoot");
 
             foreach (var module in modules)

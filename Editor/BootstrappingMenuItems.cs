@@ -5,7 +5,7 @@ namespace WhiteArrowEditor.Bootstraping
 {
     public static class BootstrappingMenuItems
     {
-        private static BootSettings _bootModuleRegistry => EditorBootSettingsProvider.Load();
+        private static BootstrapingSettings _bootModuleRegistry => EditorBootSettingsProvider.Load();
 
 
 

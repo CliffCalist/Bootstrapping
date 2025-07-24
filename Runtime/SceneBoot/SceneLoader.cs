@@ -18,7 +18,7 @@ namespace WhiteArrow.Bootstraping
         /// <returns>IEnumerator for coroutine execution.</returns>
         public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
-            BootSettingsProvider.ThrowIsNotEnabled();
+            BootstrapingSettingsProvider.ThrowIsNotEnabled();
             GameBoot.ThrowIfNotLaunched();
 
             if (LoadingScreenProvider.Screen != null && !LoadingScreenProvider.Screen.IsShowed)
