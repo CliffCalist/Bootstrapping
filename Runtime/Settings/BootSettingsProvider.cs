@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace WhiteArrow.Bootstraping
 {
-    public static class BootstrapingSettingsProvider
+    public static class BootSettingsProvider
     {
-        private static BootstrapingSettings s_settings;
+        private static BootSettings s_settings;
 
 
         public static bool IsEnabled
@@ -59,7 +59,7 @@ namespace WhiteArrow.Bootstraping
             var modules = new List<IAsyncBootModule>();
             if (s_settings == null)
             {
-                Debug.LogError($"{nameof(BootstrapingSettings)} not found in Resources folder.");
+                Debug.LogError($"{nameof(BootSettings)} not found in Resources folder.");
                 return modules;
             }
 
@@ -98,7 +98,7 @@ namespace WhiteArrow.Bootstraping
         private static void LoadSettings()
         {
             if (s_settings == null)
-                s_settings = Resources.Load<BootstrapingSettings>(BootstrapingSettings.FILE_NAME);
+                s_settings = Resources.Load<BootSettings>(BootSettings.FILE_NAME);
         }
     }
 }

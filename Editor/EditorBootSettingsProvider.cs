@@ -6,16 +6,16 @@ namespace WhiteArrowEditor.Bootstraping
 {
     public static class EditorBootSettingsProvider
     {
-        private static BootstrapingSettings s_settings;
+        private static BootSettings s_settings;
 
 
 
         public const string RESOURCES_FOLDER_PATH = "Assets/Resources/";
-        public const string SETTINGS_ASSET_PATH = RESOURCES_FOLDER_PATH + BootstrapingSettings.FILE_NAME + ".asset";
+        public const string SETTINGS_ASSET_PATH = RESOURCES_FOLDER_PATH + BootSettings.FILE_NAME + ".asset";
 
 
 
-        public static BootstrapingSettings Settings
+        public static BootSettings Settings
         {
             get
             {
@@ -33,14 +33,14 @@ namespace WhiteArrowEditor.Bootstraping
             if (s_settings != null)
                 return;
 
-            s_settings = AssetDatabase.LoadAssetAtPath<BootstrapingSettings>(SETTINGS_ASSET_PATH);
+            s_settings = AssetDatabase.LoadAssetAtPath<BootSettings>(SETTINGS_ASSET_PATH);
 
             if (s_settings == null)
             {
                 if (!AssetDatabase.IsValidFolder(RESOURCES_FOLDER_PATH))
                     Project.CreateFullFolderPath(RESOURCES_FOLDER_PATH);
 
-                s_settings = ScriptableObject.CreateInstance<BootstrapingSettings>();
+                s_settings = ScriptableObject.CreateInstance<BootSettings>();
                 AssetDatabase.CreateAsset(s_settings, SETTINGS_ASSET_PATH);
 
                 Debug.Log($"{SETTINGS_ASSET_PATH} asset created in {RESOURCES_FOLDER_PATH}.");

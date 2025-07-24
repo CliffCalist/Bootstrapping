@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace WhiteArrow.Bootstraping
 {
-    public class BootstrapingSettings : ScriptableObject
+    public class BootSettings : ScriptableObject
     {
         public bool BootstrapingIsEnabled = true;
         public List<string> ModuleTypeNames = new();
