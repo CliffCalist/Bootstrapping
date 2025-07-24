@@ -77,13 +77,16 @@ public class MySceneBoot : SceneBoot
 
 ---
 
-### Editor Integration
+### Preload Scene (required)
 
-This package includes several helpful editor tools:
+Bootstrapping requires a scene named `Preload` to act as an intermediate scene between unloading the current scene and loading the next one.  
+Its purpose is to reduce memory spikes by ensuring the previous scene is fully unloaded before the next one begins loading.
 
-- **`Tools → WhiteArrow → Bootstrapping → Enable / Disable`** — allows to toggle the bootstrapping system on or off in the current project.
-- **`Tools → WhiteArrow → Bootstrapping → Fix Preload Scene`** — validates and fixes the required Preload Scene (creates it if missing and ensures it's at build index 0).
-- **`Tools → WhiteArrow → Bootstrapping → Update Registry`** — manually triggers registry update for game boot modules.
+If the `Preload` scene is missing or not added to Build Settings, the editor will automatically show a dialog and generate it.
+
+You can also manually trigger its generation from the Unity menu:  
+`Tools → WhiteArrow → Bootstrapping → Generate Preload Scene`
+(Only available when the scene is missing or misconfigured)
 
 ---
 
@@ -143,17 +146,11 @@ This handles:
 
 ### Editor Integration
 
-- Enable or disable the system via:
+This package includes several helpful editor tools:
 
-  ```
-  Tools → WhiteArrow → Bootstrapping → Enable / Disable
-  ```
-
-- Manually update the registry:
-
-  ```
-  Tools → WhiteArrow → Bootstrapping → Update Registry
-  ```
+- **`Tools → WhiteArrow → Bootstrapping → Enable / Disable`** — allows to toggle the bootstrapping system on or off in the current project.
+- **`Tools → WhiteArrow → Bootstrapping → Fix Preload Scene`** — validates and fixes the required Preload Scene (creates it if missing and ensures it's at build index 0).
+- **`Tools → WhiteArrow → Bootstrapping → Update Registry`** — manually triggers registry update for game boot modules.
 
 ---
 
