@@ -31,6 +31,7 @@ namespace WhiteArrow.Bootstraping
                 return;
 
             Debug.Log("<b>Game is bootstraping...</b>");
+            PrepareLoadingScreen();
 
             var modules = BootstrapingSettingsProvider.CreateModules();
             Profiler.StartSample("GameBoot");
@@ -59,6 +60,19 @@ namespace WhiteArrow.Bootstraping
             var startSceneName = SceneManager.GetActiveScene().name;
             var loadSceneCoroutine = SceneLoader.LoadScene(startSceneName);
             Coroutines.Launch(loadSceneCoroutine);
+        }
+
+        private static void PrepareLoadingScreen()
+        {
+            if (BootstrapingSettingsProvider.LoadingScreen != null)
+            {
+                var screenPrefabAsMono = BootstrapingSettingsProvider.LoadingScreen as MonoBehaviour;
+                var screen = UnityEngine.Object.Instantiate(screenPrefabAsMono) as ILoadingScreen;
+
+                screen.MarkAsDontDestroyOnLoad();
+                LoadingScreenProvider.SetScreen(screen);
+                screen.Show(true, null);
+            }
         }
     }
 }

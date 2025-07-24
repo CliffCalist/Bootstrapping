@@ -19,6 +19,15 @@ namespace WhiteArrow.Bootstraping
             }
         }
 
+        public static ILoadingScreen LoadingScreen
+        {
+            get
+            {
+                LoadSettings();
+                return s_settings.LoadingScreen;
+            }
+        }
+
 
 
         public static bool LogIsNotEnabled()

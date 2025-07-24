@@ -7,8 +7,14 @@ namespace WhiteArrow.Bootstraping
     {
         public bool BootstrapingIsEnabled = true;
         public List<string> ModuleTypeNames = new();
+        [SerializeField] private InterfaceField<ILoadingScreen> _loadingScreen;
+
 
 
         public const string FILE_NAME = "BootSettings";
+
+
+
+        public ILoadingScreen LoadingScreen => _loadingScreen.Value;
     }
 }
