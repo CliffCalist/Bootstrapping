@@ -6,8 +6,6 @@ namespace WhiteArrow.Bootstraping
     {
         bool IsShowed { get; }
 
-        void MarkAsDontDestroyOnLoad();
-
         void Show(bool skipAnimations, Action callback);
         void Hide();
     }

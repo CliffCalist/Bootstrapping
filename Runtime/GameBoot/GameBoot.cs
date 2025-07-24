@@ -45,12 +45,13 @@ namespace WhiteArrow.Bootstraping
         {
             if (BootSettingsProvider.Settings.LoadingScreen != null)
             {
-                var screenPrefabAsMono = BootSettingsProvider.Settings.LoadingScreen as MonoBehaviour;
-                var screen = UnityEngine.Object.Instantiate(screenPrefabAsMono) as ILoadingScreen;
+                var monoScreenPrefab = BootSettingsProvider.Settings.LoadingScreen as MonoBehaviour;
+                var monoScreenInstance = UnityEngine.Object.Instantiate(monoScreenPrefab);
+                var screenInstance = monoScreenInstance as ILoadingScreen;
 
-                screen.MarkAsDontDestroyOnLoad();
-                SceneLoader.SetLoadingScreen(screen);
-                screen.Show(true, null);
+                UnityEngine.Object.DontDestroyOnLoad(monoScreenInstance.gameObject);
+                SceneLoader.SetLoadingScreen(screenInstance);
+                screenInstance.Show(true, null);
             }
         }
 
