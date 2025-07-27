@@ -36,7 +36,7 @@ namespace WhiteArrow.Bootstraping
             await ExecuteModules();
             IsLaunched = true;
 
-            var startSceneName = SceneManager.GetActiveScene().name;
+            var startSceneName = SceneManager.GetSceneByBuildIndex(1).name;
             var loadSceneCoroutine = SceneLoader.LoadScene(startSceneName);
             Coroutines.Launch(loadSceneCoroutine);
         }
