@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WhiteArrow.StackedProfiling;
+using Object = UnityEngine.Object;
 
 namespace WhiteArrow.Bootstraping
 {
@@ -24,8 +26,19 @@ namespace WhiteArrow.Bootstraping
         /// <summary>
         /// Coroutine for loading a scene with an intermediate loading scene.
         /// </summary>
-        /// <param name="sceneName">The name of the scene to load.</param>
-        /// <returns>IEnumerator for coroutine execution.</returns>
+        public static IEnumerator LoadScene(int buildIndex, bool skipShowLoadingScreenAnimations = false)
+        {
+            var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+            if (string.IsNullOrEmpty(scenePath))
+                throw new ArgumentException($"Scene with build index {buildIndex} not found in Build Settings.");
+
+            var sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+            return LoadScene(sceneName, skipShowLoadingScreenAnimations);
+        }
+
+        /// <summary>
+        /// Coroutine for loading a scene with an intermediate loading scene.
+        /// </summary>
         public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
             BootSettingsProvider.Settings.ThrowIfNotEnabled();
@@ -79,7 +92,7 @@ namespace WhiteArrow.Bootstraping
 
         private static IEnumerator TryShowLoadingScreen(bool skipShowLoadingScreenAnimations)
         {
-            if (s_loadingScreen == null || !s_loadingScreen.IsShowed)
+            if (s_loadingScreen == null || s_loadingScreen.IsShowed)
                 yield break;
 
             var isScreenShowed = false;
@@ -91,7 +104,7 @@ namespace WhiteArrow.Bootstraping
 
         private static IEnumerator TryHideShowLoadingScreen(float showScreenTime)
         {
-            if (s_loadingScreen == null || s_loadingScreen.IsShowed)
+            if (s_loadingScreen == null || !s_loadingScreen.IsShowed)
                 yield break;
 
             var elapsedTime = Time.time - showScreenTime;

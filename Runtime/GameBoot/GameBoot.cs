@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using WhiteArrow.StackedProfiling;
 
 namespace WhiteArrow.Bootstraping
@@ -36,8 +35,7 @@ namespace WhiteArrow.Bootstraping
             await ExecuteModules();
             IsLaunched = true;
 
-            var startSceneName = SceneManager.GetSceneByBuildIndex(1).name;
-            var loadSceneCoroutine = SceneLoader.LoadScene(startSceneName);
+            var loadSceneCoroutine = SceneLoader.LoadScene(1);
             Coroutines.Launch(loadSceneCoroutine);
         }
 
@@ -76,6 +74,7 @@ namespace WhiteArrow.Bootstraping
             }
 
             Profiler.StopSample("GameBootModules");
+            Profiler.LogSample("GameBootModules");
             Debug.Log("<color=green>All game modules executed.</color>");
         }
     }
