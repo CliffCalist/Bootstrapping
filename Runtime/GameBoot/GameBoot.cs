@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using WhiteArrow.StackedProfiling;
+using WhiteArrow.GroupedPerformance;
 
 namespace WhiteArrow.Bootstraping
 {
@@ -55,26 +55,25 @@ namespace WhiteArrow.Bootstraping
 
         private static async Task ExecuteModules()
         {
+            const string PROFILING_GROUP = "Run GameBootModule's";
+
             var modules = BootSettingsProvider.Settings.CreateModules();
-            Profiler.StartSample("GameBootModules");
 
             foreach (var module in modules)
             {
                 var moduleName = module.GetType().Name;
 
                 Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
-                Profiler.StartSample(moduleName);
+                PerformanceProfiler.StartSample(PROFILING_GROUP, moduleName);
 
                 await module.RunAsync();
 
-                Profiler.StopSample(moduleName);
+                PerformanceProfiler.StopSample(PROFILING_GROUP, moduleName);
 
                 Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
-                Profiler.LogSample(moduleName);
             }
 
-            Profiler.StopSample("GameBootModules");
-            Profiler.LogSample("GameBootModules");
+            PerformanceProfiler.LogGroup(PROFILING_GROUP);
             Debug.Log("<color=green>All game modules executed.</color>");
         }
     }

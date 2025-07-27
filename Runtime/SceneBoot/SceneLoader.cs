@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using WhiteArrow.StackedProfiling;
+using WhiteArrow.GroupedPerformance;
 using Object = UnityEngine.Object;
 
 namespace WhiteArrow.Bootstraping
@@ -78,13 +78,12 @@ namespace WhiteArrow.Bootstraping
             else
             {
                 var bootstrapName = sceneBootstrap.GetType().Name;
-                Profiler.StartSample(bootstrapName);
+                PerformanceProfiler.StartSimpleSample(bootstrapName);
 
                 sceneBootstrap.Run();
                 yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
 
-                Profiler.StopSample(bootstrapName);
-                Profiler.LogSample(bootstrapName);
+                PerformanceProfiler.StopSimpleSample(bootstrapName);
             }
         }
 
