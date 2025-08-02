@@ -84,6 +84,7 @@ namespace WhiteArrow.Bootstraping
                 yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
 
                 PerformanceProfiler.StopSimpleSample(bootstrapName);
+                PerformanceProfiler.LogSimpleSample(bootstrapName);
             }
         }
 
