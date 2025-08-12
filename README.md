@@ -19,9 +19,11 @@ Bootstrapping is a modular initialization framework for Unity that provides full
 
 To install via UPM, use "Install package from git URL" and add the following:
 
-- https://github.com/CliffCalist/grouped-performance.git
-- https://github.com/CliffCalist/Unity-Tools.git
-- https://github.com/CliffCalist/Bootstrapping.git
+```
+1. https://github.com/CliffCalist/grouped-performance.git
+2. https://github.com/CliffCalist/Unity-Tools.git
+3. https://github.com/CliffCalist/Bootstrapping.git
+```
 
 ---
 
