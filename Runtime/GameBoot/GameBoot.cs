@@ -35,8 +35,7 @@ namespace WhiteArrow.Bootstraping
             await ExecuteModules();
             IsLaunched = true;
 
-            var loadSceneCoroutine = SceneLoader.LoadScene(1);
-            Coroutines.Launch(loadSceneCoroutine);
+            SceneLoader.LoadScene(1);
         }
 
         private static void PrepareLoadingScreen()
