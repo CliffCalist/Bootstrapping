@@ -10,6 +10,7 @@ namespace WhiteArrow.Bootstraping
     public static class SceneLoader
     {
         private static ILoadingScreen s_loadingScreen;
+        private static int s_loadingScreenRefCount = 0;
 
 
         public const string INTERMEDIATE_SCENE_NAME = "Preload";
@@ -53,7 +54,7 @@ namespace WhiteArrow.Bootstraping
             Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
             yield return WaitBootFinish();
-            yield return TryHideShowLoadingScreen(loadingStartTime);
+            yield return TryHideLoadingScreen(loadingStartTime);
         }
 
 
@@ -92,19 +93,29 @@ namespace WhiteArrow.Bootstraping
 
         private static IEnumerator TryShowLoadingScreen(bool skipShowLoadingScreenAnimations)
         {
-            if (s_loadingScreen == null || s_loadingScreen.IsShowed)
+            if (s_loadingScreen == null)
                 yield break;
 
-            var isScreenShowed = false;
-            s_loadingScreen.Show(skipShowLoadingScreenAnimations, () => isScreenShowed = true);
+            if (s_loadingScreenRefCount == 0 && !s_loadingScreen.IsShowed)
+            {
+                var isScreenShowed = false;
+                s_loadingScreen.Show(skipShowLoadingScreenAnimations, () => isScreenShowed = true);
 
-            var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
-            yield return waitWhileScreenShowing;
+                var waitWhileScreenShowing = new WaitWhile(() => !isScreenShowed);
+                yield return waitWhileScreenShowing;
+            }
+
+            s_loadingScreenRefCount++;
         }
 
-        private static IEnumerator TryHideShowLoadingScreen(float showScreenTime)
+        private static IEnumerator TryHideLoadingScreen(float showScreenTime)
         {
             if (s_loadingScreen == null || !s_loadingScreen.IsShowed)
+                yield break;
+
+            s_loadingScreenRefCount--;
+
+            if (s_loadingScreenRefCount > 0)
                 yield break;
 
             var elapsedTime = Time.time - showScreenTime;
