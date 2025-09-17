@@ -24,23 +24,35 @@ namespace WhiteArrow.Bootstraping
 
 
 
+        public static void LoadScene(int buildIndex, bool skipShowLoadingScreenAnimations = false)
+        {
+            Coroutines.Launch(LoadSceneCoroutine(buildIndex, skipShowLoadingScreenAnimations));
+        }
+
         /// <summary>
         /// Coroutine for loading a scene with an intermediate loading scene.
         /// </summary>
-        public static IEnumerator LoadScene(int buildIndex, bool skipShowLoadingScreenAnimations = false)
+        public static IEnumerator LoadSceneCoroutine(int buildIndex, bool skipShowLoadingScreenAnimations = false)
         {
             var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
             if (string.IsNullOrEmpty(scenePath))
                 throw new ArgumentException($"Scene with build index {buildIndex} not found in Build Settings.");
 
             var sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-            return LoadScene(sceneName, skipShowLoadingScreenAnimations);
+            return LoadSceneCoroutine(sceneName, skipShowLoadingScreenAnimations);
+        }
+
+
+
+        public static void LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
+        {
+            Coroutines.Launch(LoadSceneCoroutine(sceneName, skipShowLoadingScreenAnimations));
         }
 
         /// <summary>
         /// Coroutine for loading a scene with an intermediate loading scene.
         /// </summary>
-        public static IEnumerator LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
+        public static IEnumerator LoadSceneCoroutine(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
             BootSettingsProvider.Settings.ThrowIfNotEnabled();
             GameBoot.ThrowIfNotLaunched();
