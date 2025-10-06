@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using WhiteArrow.Bootstraping;
@@ -38,13 +39,31 @@ namespace WhiteArrowEditor.Bootstraping
             if (s_settings == null)
             {
                 if (!AssetDatabase.IsValidFolder(RESOURCES_FOLDER_PATH))
-                    Project.CreateFullFolderPath(RESOURCES_FOLDER_PATH);
+                    CreateFullFolderPath(RESOURCES_FOLDER_PATH);
 
                 s_settings = ScriptableObject.CreateInstance<BootSettings>();
                 AssetDatabase.CreateAsset(s_settings, SETTINGS_ASSET_PATH);
 
                 Debug.Log($"{SETTINGS_ASSET_PATH} asset created in {RESOURCES_FOLDER_PATH}.");
                 EditorUtility.DisplayDialog("Bootstraping", "Bootstraping settings created.", "OK");
+            }
+        }
+
+        public static void CreateFullFolderPath(string path)
+        {
+            if (!AssetDatabase.IsValidFolder(path))
+            {
+                var partsOfPath = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var accumulatedPath = "Assets";
+
+                foreach (var part in partsOfPath)
+                {
+                    if (part == "Assets")
+                        continue;
+
+                    AssetDatabase.CreateFolder(accumulatedPath, part);
+                    accumulatedPath += "/" + part;
+                }
             }
         }
 

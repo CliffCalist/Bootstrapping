@@ -41,8 +41,7 @@ To install via UPM, use "Install package from git URL" and add the following:
 
 ```
 1. https://github.com/CliffCalist/grouped-performance.git
-2. https://github.com/CliffCalist/Unity-Tools.git
-3. https://github.com/CliffCalist/Bootstrapping.git
+2. https://github.com/CliffCalist/Bootstrapping.git
 ```
 
 ---
@@ -176,30 +175,6 @@ SceneLoader.LoadScene(1);
 SceneLoader.LoadScene("Level01");
 ```
 
-Optionally, you can skip loading screen animations:
-
-```csharp
-SceneLoader.LoadScene("Level01", skipShowLoadingScreenAnimations: true);
-```
-
-These methods internally launch coroutines for scene loading, so you don't need to worry about coroutine management in most cases.
-
-However, if you need to wait for scene loading inside your own coroutine, you can use the coroutine-based version:
-
-```csharp
-yield return SceneLoader.LoadSceneCoroutine("Level01");
-```
-
-These coroutine variants accept the same arguments as the simplified methods, including the optional `skipShowLoadingScreenAnimations` parameter.
-
-> ⚠️ If you start the coroutine manually, make sure the calling `MonoBehaviour` is not part of the scene being unloaded. Otherwise, Unity will stop the coroutine when the scene unloads.
->
-> For safe execution, use `Coroutines.Launch(...)` from the [Unity Tools](https://github.com/CliffCalist/Unity-Tools.git) package, which Bootstrapping depends on. It launches coroutines on a persistent `MonoBehaviour` marked with `DontDestroyOnLoad`:
->
-> ```csharp
-> Coroutines.Launch(SceneLoader.LoadScene(1));
-> ```
-
 ---
 
 ### Editor Integration
@@ -234,3 +209,6 @@ This enables better insight into boot performance and helps identify slow module
   - [x] Assign loading screen prefab via editor instead of code
   - [ ] Toggle Preload scene usage
   - [ ] Define module execution order visually
+- [ ] Remove dependency
+  - [x] Remove dependency on UnityTools
+  - [ ] Remove dependency on GroupedPerformance

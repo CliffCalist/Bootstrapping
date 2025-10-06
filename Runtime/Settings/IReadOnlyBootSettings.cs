@@ -6,7 +6,7 @@ namespace WhiteArrow.Bootstraping
     {
         bool IsEnabled { get; }
         float MinLoadingScreenTime { get; }
-        ILoadingScreen LoadingScreen { get; }
+        LoadingScreen LoadingScreen { get; }
 
 
 

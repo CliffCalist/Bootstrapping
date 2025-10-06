@@ -9,7 +9,7 @@ namespace WhiteArrow.Bootstraping
 
 
 
-        public static IReadOnlyBootSettings Settings
+        internal static IReadOnlyBootSettings Settings
         {
             get
             {

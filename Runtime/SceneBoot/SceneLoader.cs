@@ -9,7 +9,7 @@ namespace WhiteArrow.Bootstraping
 {
     public static class SceneLoader
     {
-        private static ILoadingScreen s_loadingScreen;
+        private static LoadingScreen s_loadingScreen;
         private static int s_loadingScreenRefCount = 0;
 
 
@@ -17,7 +17,7 @@ namespace WhiteArrow.Bootstraping
 
 
 
-        internal static void SetLoadingScreen(ILoadingScreen screen)
+        internal static void SetLoadingScreen(LoadingScreen screen)
         {
             s_loadingScreen = screen;
         }
@@ -26,13 +26,15 @@ namespace WhiteArrow.Bootstraping
 
         public static void LoadScene(int buildIndex, bool skipShowLoadingScreenAnimations = false)
         {
-            Coroutines.Launch(LoadSceneCoroutine(buildIndex, skipShowLoadingScreenAnimations));
+            DontDestroyMono.LaunchCoroutine(
+                LoadSceneCoroutine(buildIndex, skipShowLoadingScreenAnimations)
+            );
         }
 
         /// <summary>
         /// Coroutine for loading a scene with an intermediate loading scene.
         /// </summary>
-        public static IEnumerator LoadSceneCoroutine(int buildIndex, bool skipShowLoadingScreenAnimations = false)
+        private static IEnumerator LoadSceneCoroutine(int buildIndex, bool skipShowLoadingScreenAnimations = false)
         {
             var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
             if (string.IsNullOrEmpty(scenePath))
@@ -46,13 +48,15 @@ namespace WhiteArrow.Bootstraping
 
         public static void LoadScene(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
-            Coroutines.Launch(LoadSceneCoroutine(sceneName, skipShowLoadingScreenAnimations));
+            DontDestroyMono.LaunchCoroutine(
+                LoadSceneCoroutine(sceneName, skipShowLoadingScreenAnimations)
+            );
         }
 
         /// <summary>
         /// Coroutine for loading a scene with an intermediate loading scene.
         /// </summary>
-        public static IEnumerator LoadSceneCoroutine(string sceneName, bool skipShowLoadingScreenAnimations = false)
+        private static IEnumerator LoadSceneCoroutine(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
             BootSettingsProvider.Settings.ThrowIfNotEnabled();
             GameBoot.ThrowIfNotLaunched();

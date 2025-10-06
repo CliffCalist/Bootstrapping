@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using WhiteArrow.GroupedPerformance;
+using Object = UnityEngine.Object;
 
 namespace WhiteArrow.Bootstraping
 {
@@ -42,13 +43,11 @@ namespace WhiteArrow.Bootstraping
         {
             if (BootSettingsProvider.Settings.LoadingScreen != null)
             {
-                var monoScreenPrefab = BootSettingsProvider.Settings.LoadingScreen as MonoBehaviour;
-                var monoScreenInstance = UnityEngine.Object.Instantiate(monoScreenPrefab);
-                var screenInstance = monoScreenInstance as ILoadingScreen;
+                var screen = Object.Instantiate(BootSettingsProvider.Settings.LoadingScreen);
+                Object.DontDestroyOnLoad(screen.gameObject);
 
-                UnityEngine.Object.DontDestroyOnLoad(monoScreenInstance.gameObject);
-                SceneLoader.SetLoadingScreen(screenInstance);
-                screenInstance.Show(true, null);
+                SceneLoader.SetLoadingScreen(screen);
+                screen.Show(true, null);
             }
         }
 
