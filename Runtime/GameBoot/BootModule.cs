@@ -2,14 +2,14 @@ using System.Threading.Tasks;
 
 namespace WhiteArrow.Bootstraping
 {
-    public interface IBootModule : IAsyncBootModule
+    public abstract class BootModule : AsyncBootModule
     {
-        Task IAsyncBootModule.RunAsync()
+        internal protected override sealed Task RunAsync()
         {
             Run();
             return Task.CompletedTask;
         }
 
-        void Run();
+        protected abstract void Run();
     }
 }

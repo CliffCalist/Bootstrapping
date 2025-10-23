@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5041df846068846ad96bfd0c04dfb57d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _modulesListView: {fileID: 9197481963319205126, guid: 9397000b12281448aab14bc37adf1a82, type: 3}
+  - _moduleItemView: {fileID: 9197481963319205126, guid: 41e724f31015649cf9e47b76bd6c1f05, type: 3}
+  - _moduleItemButtonView: {fileID: 9197481963319205126, guid: 5ad95af4bf7fa456aadadc4e1555981e, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

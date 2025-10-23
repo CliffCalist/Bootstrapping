@@ -14,7 +14,7 @@ namespace WhiteArrow.Bootstraping
         public static void ThrowIfNotLaunched()
         {
             if (!IsLaunched)
-                throw new InvalidOperationException($"Not all {nameof(IAsyncBootModule)} have finished working.");
+                throw new InvalidOperationException($"Not all {nameof(AsyncBootModule)} have finished working.");
         }
 
 
@@ -55,7 +55,7 @@ namespace WhiteArrow.Bootstraping
         {
             const string PROFILING_GROUP = "Run GameBootModule's";
 
-            var modules = BootSettingsProvider.Settings.CreateModules();
+            var modules = BootSettingsProvider.Settings.Modules;
 
             foreach (var module in modules)
             {
