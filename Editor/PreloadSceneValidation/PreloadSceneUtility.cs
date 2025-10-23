@@ -35,6 +35,13 @@ namespace WhiteArrowEditor.Bootstraping
 
 
 
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Fix Preload Scene Issue", true)]
+        private static bool ValidateFixPreloadSceneIssue()
+        {
+            return !PreloadSceneUtility.IsValid();
+        }
+
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Fix Preload Scene Issue")]
         public static void FixIssue()
         {
             var sceneExists = EditorBuildSettings.scenes.Any(s => s.path == PRELOAD_SCENE_OUTPUT_PATH);
