@@ -26,12 +26,13 @@ Bootstrapping is:
 
 ## Features
 
-- Game Boot Modules (sync or async), with optional execution order via attribute
-- Scene Boot with completion signal
-- Preload Scene between transitions to ensure memory cleanup
-- Optional Loading Screen integration with minimum display time
-- Boot module registry is generated at edit-time to avoid runtime reflection
-- Editor menu for toggling and manual registry update
+- Initialize global systems at game start with Game Boot Modules
+- Configure boot modules via custom editor inspector
+- Control execution order of modules visually
+- Guaranteed execution before any game logic
+- Scene Boot for scene-specific initialization
+- Support for both sync and async boot logic
+- Optional loading screen with minimum display time
 
 ---
 
@@ -57,40 +58,46 @@ This is especially useful for:
 - Requesting platform permissions
 - Setting up game-wide services or loading persistent data
 
-Bootstrapping automatically scans for all boot modules in your project after each script compilation. If new modules are added or existing ones are removed, it will show a dialog explaining the changes and updating the registry accordingly.
-
-If this process doesn't trigger automatically, you can manually update the registry from the Unity menu:  
-`Tools → WhiteArrow → Bootstrapping → Update Registry`
-
-Modules can be either synchronous or asynchronous:
-
+Example of a synchronous module:
 ```csharp
-public interface IBootModule
+public class MySyncBootModule : BootModule
 {
-    void Run();
-}
-
-public interface IAsyncBootModule
-{
-    Task RunAsync();
-}
-```
-
-Asynchronous modules are executed on the **main thread** without blocking it, allowing you to safely use Unity API inside `RunAsync()`.
-
-Example:
-
-```csharp
-[GameBootOrder(10)]
-public class MyBootModule : IAsyncBootModule
-{
-    public async Task RunAsync()
+    protected override void Run()
     {
-        await Task.Delay(500); // simulate async init
-        Debug.Log("Ad SDK initialized.");
+        Debug.Log("Synchronous init");
     }
 }
 ```
+
+Asynchronous modules are executed on the **main thread** without blocking it, allowing you to safely use Unity API inside `RunAsync()`. Example of an asynchronous module:
+```csharp
+public class MyAsyncBootModule : AsyncBootModule
+{
+    protected override async Task RunAsync()
+    {
+        await Task.Delay(500);
+        Debug.Log("Asynchronous init");
+    }
+}
+```
+
+---
+
+### Registering Modules
+
+To register boot modules, open the `Assets/Resources/BootSettings` asset. Its custom inspector provides a **Modules** section where you manage the list of registered modules.
+
+Here's how to use the interface:
+- Click **"+"** to add a new unregistered module.
+- Use **"↑"** and **"↓"** to change the module’s order.
+- Click **"✖"** to remove a module from the list.
+- Expand any module to configure its serialized fields.
+
+> To ensure module fields show up in the inspector, follow Unity's standard serialization practices.
+
+You can freely reorder modules, and they will be executed in the exact order shown.
+
+![BootSettings Inspector Screenshot](Documentation/bootSettingsInspector.png)
 
 ---
 
@@ -149,12 +156,24 @@ Loading screens are automatically displayed during scene transitions. Specifical
 
 If the loaded scene does not have a `SceneBoot` component, the loading screen will hide automatically once Unity finishes loading the scene.
 
+To create your own loading screen, simply inherit from the `LoadingScreen` class:
 ```csharp
-public interface ILoadingScreen
+public class MyLoadingScreen : LoadingScreen
 {
-    bool IsShowed { get; }
-    void Show(bool skipAnimations, Action callback);
-    void Hide();
+    public override bool IsShowed => gameObject.activeSelf;
+
+    public override void Show(bool skipAnimations, Action callback)
+    {
+        // Display your UI
+        gameObject.SetActive(true);
+        callback?.Invoke();
+    }
+
+    public override void Hide()
+    {
+        // Hide your UI
+        gameObject.SetActive(false);
+    }
 }
 ```
 
@@ -183,7 +202,6 @@ This package includes several helpful editor tools:
 
 - **`Tools → WhiteArrow → Bootstrapping → Enable / Disable`** — allows to toggle the bootstrapping system on or off in the current project.
 - **`Tools → WhiteArrow → Bootstrapping → Fix Preload Scene Issue`** — validates and fixes the required Preload Scene (creates it if missing and ensures it's at build index 0).
-- **`Tools → WhiteArrow → Bootstrapping → Update Registry`** — manually triggers registry update for game boot modules.
 
 ---
 
@@ -207,8 +225,8 @@ This enables better insight into boot performance and helps identify slow module
 - [ ] Support parallel execution of Game Boot Modules with controlled dependencies
 - [ ] Framework settings window:
   - [x] Assign loading screen prefab via editor instead of code
+  - [x] Define module execution order visually
   - [ ] Toggle Preload scene usage
-  - [ ] Define module execution order visually
 - [ ] Remove dependency
   - [x] Remove dependency on UnityTools
   - [ ] Remove dependency on GroupedPerformance
