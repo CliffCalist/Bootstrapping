@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using WhiteArrow.GroupedPerformance;
@@ -55,7 +56,7 @@ namespace WhiteArrow.Bootstraping
         {
             const string PROFILING_GROUP = "Run GameBootModule's";
 
-            var modules = BootSettingsProvider.Settings.Modules;
+            var modules = BootSettingsProvider.Settings.Modules.Where(m => m != null);
 
             foreach (var module in modules)
             {

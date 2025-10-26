@@ -66,6 +66,11 @@ namespace WhiteArrowEditor.Bootstrapping
 
         private void RefreshModulesContainer()
         {
+            _settings.Modules
+                .Where(m => m == null || m.GetType() == null)
+                .ToList()
+                .ForEach(m => _settings.RemoveModule(m));
+
             _modulesContainer.Clear();
 
             if (_settings.Modules.Count == 0)
