@@ -1,9 +1,0 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:VisualElement style="flex-grow: 0; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; margin-top: 4px; margin-right: 4px; margin-bottom: 4px; margin-left: 4px; border-left-color: rgb(28, 28, 28); border-right-color: rgb(28, 28, 28); border-top-color: rgb(28, 28, 28); border-bottom-color: rgb(28, 28, 28); flex-shrink: 1;">
-        <ui:VisualElement name="header" style="flex-grow: 0; height: auto; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px; background-color: rgb(84, 84, 84); border-bottom-width: 1px; border-left-color: rgb(28, 28, 28); border-right-color: rgb(28, 28, 28); border-top-color: rgb(28, 28, 28); border-bottom-color: rgb(28, 28, 28); border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; flex-direction: row;">
-            <ui:Label text="Modules" style="-unity-font-style: bold; color: rgb(196, 196, 196); flex-grow: 1; -unity-text-align: middle-left; font-size: 13px;" />
-            <ui:Button text="+" name="addModule-button" />
-        </ui:VisualElement>
-        <ui:VisualElement name="modules-container" style="flex-grow: 1;" />
-    </ui:VisualElement>
-</ui:UXML>

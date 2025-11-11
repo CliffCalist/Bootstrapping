@@ -42,7 +42,8 @@ To install via UPM, use "Install package from git URL" and add the following:
 
 ```
 1. https://github.com/CliffCalist/grouped-performance.git
-2. https://github.com/CliffCalist/Bootstrapping.git
+2. https://github.com/CliffCalist/editor-flex-list.git
+3. https://github.com/CliffCalist/Bootstrapping.git
 ```
 
 ---
