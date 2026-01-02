@@ -65,9 +65,20 @@ namespace WhiteArrow.Bootstraping
                 Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
                 PerformanceProfiler.StartSample(PROFILING_GROUP, moduleName);
 
-                await module.RunAsync();
-
-                PerformanceProfiler.StopSample(PROFILING_GROUP, moduleName);
+                try
+                {
+                    await module.RunAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"<b>Game boot module failed:</b> {moduleName}");
+                    Debug.LogException(ex);
+                    throw;
+                }
+                finally
+                {
+                    PerformanceProfiler.StopSample(PROFILING_GROUP, moduleName);
+                }
 
                 Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
             }
