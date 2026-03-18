@@ -73,7 +73,6 @@ namespace WhiteArrow.Bootstraping
                 {
                     Debug.LogError($"<b>Game boot module failed:</b> {moduleName}");
                     Debug.LogException(ex);
-                    throw;
                 }
                 finally
                 {
