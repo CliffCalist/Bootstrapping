@@ -97,8 +97,8 @@ namespace WhiteArrow.Bootstraping
                 var bootstrapName = sceneBootstrap.GetType().Name;
                 PerformanceProfiler.StartSimpleSample(bootstrapName);
 
-                sceneBootstrap.Run();
-                yield return new WaitWhile(() => !sceneBootstrap.IsFinished);
+                var sceneTask = sceneBootstrap.RunAsync();
+                yield return new WaitWhile(() => !sceneTask.IsCompleted);
 
                 PerformanceProfiler.StopSimpleSample(bootstrapName);
                 PerformanceProfiler.LogSimpleSample(bootstrapName);

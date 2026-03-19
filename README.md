@@ -106,35 +106,31 @@ You can freely reorder modules, and they will be executed in the exact order sho
 
 SceneBoot is the scene-specific bootstrap module. Each scene can define its own `SceneBoot` class, which serves as a controlled entry point for initializing systems, loading data, or handling scene-level setup.
 
- A common example is loading game progress. For instance, if your game pulls data from a remote database, you can use `Run()` to load this data and then initialize your systems in the correct order — such as applying settings, showing UI, and setting up audio.
+A common example is loading game progress. For instance, if your game pulls data from a remote database, you can use `RunAsync()` to load this data and then initialize your systems in the correct order — such as applying settings, showing UI, and setting up audio.
 
-When all setup is complete, you must call `OnFinished()` to notify Bootstrapping that the scene is ready. This is especially important for controlling the loading screen lifecycle (explained in the next section).
+Scene readiness is determined by completion of `RunAsync()`.
 
 Example:
 
 ```csharp
 public class GameplaySceneBoot : SceneBoot
 {
-    public override void Run()
+    protected override async Task RunAsync()
     {
-        LoadGameProgress(() =>
-        {
-            LoadUserSettings();
-            SetupUI();
-            InitializeAudio();
-            // Other boot logic
+        await LoadGameProgressAsync();
 
-            OnFinished();
-        });
+        LoadUserSettings();
+        SetupUI();
+        InitializeAudio();
+        // Other boot logic
     }
-
-    // Methods LoadGameProgress, LoadUserSettings, SetupUI...
 }
 ```
 
 Notes:
 - `SceneBoot` is optional — scenes without a SceneBoot won't trigger errors.
 - Only one `SceneBoot` is expected per scene. If multiple are present, one of them will still be executed, but which one is not guaranteed.
+- `RunAsync()` is executed on the main thread and can safely use Unity API before/after `await`.
 
 ---
 
@@ -153,7 +149,7 @@ You can also trigger this process manually via the Unity menu:
 
 ### Loading Screen
 
-Loading screens are automatically displayed during scene transitions. Specifically, the loading screen becomes visible at the beginning of scene loading and stays on screen until the corresponding `SceneBoot` calls `OnFinished()` to signal that the scene is fully initialized.
+Loading screens are automatically displayed during scene transitions. Specifically, the loading screen becomes visible at the beginning of scene loading and stays on screen until the corresponding `SceneBoot.RunAsync()` finishes.
 
 If the loaded scene does not have a `SceneBoot` component, the loading screen will hide automatically once Unity finishes loading the scene.
 
