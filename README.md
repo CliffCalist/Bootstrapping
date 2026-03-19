@@ -11,7 +11,9 @@ Unity doesn’t offer a clean, built-in way to manage complex initialization flo
 Bootstrapping introduces a structured alternative:
 
 - A **Game Boot** phase that runs once at startup — ideal for setting up services, SDKs, and game-wide state.
-- A **Scene Boot** phase that runs after each scene is loaded — perfect for initializing scene-specific logic in a predictable and asynchronous-friendly way.
+- A **two-phase Scene Boot** flow that runs after each scene is loaded:
+  - **Prepare phase** (`PrepareSceneAsync`) for pre-initialization setup (optional)
+  - **Initialize phase** (`InitializeSceneAsync`) for starting scene logic at the correct moment
 
 This gives you full control over your project’s launch process, with a minimal and flexible API.
 
@@ -30,9 +32,10 @@ Bootstrapping is:
 - Configure boot modules via custom editor inspector
 - Control execution order of modules visually
 - Guaranteed execution before any game logic
-- Scene Boot for scene-specific initialization
+- Two-phase Scene Boot for scene-specific setup and initialization
 - Support for both sync and async boot logic
 - Optional loading screen with minimum display time
+- Delayed scene logic start until loading screen timing constraints are satisfied
 
 ---
 
@@ -104,25 +107,44 @@ You can freely reorder modules, and they will be executed in the exact order sho
 
 ### Scene Boot
 
-SceneBoot is the scene-specific bootstrap module. Each scene can define its own `SceneBoot` class, which serves as a controlled entry point for initializing systems, loading data, or handling scene-level setup.
+`SceneBoot` is the scene-specific bootstrap module. Each scene can define its own `SceneBoot` class, which serves as a controlled entry point for scene setup and startup.
 
-A common example is loading game progress. For instance, if your game pulls data from a remote database, you can use `RunAsync()` to load this data and then initialize your systems in the correct order — such as applying settings, showing UI, and setting up audio.
+`SceneBoot` now has **two phases**:
 
-Scene readiness is determined by completion of `RunAsync()`.
+- `PrepareSceneAsync()` — **optional** phase for preparing data and scene state before logic starts.
+- `InitializeSceneAsync()` — required phase where scene logic actually starts.
+
+The default implementation of `PrepareSceneAsync()` is already completed, so you only override it when needed.
+
+Why split into two phases?
+- You can prepare the scene while the loading screen is still visible.
+- You can delay actual scene logic startup until minimum loading screen time is reached.
+- This prevents gameplay from running behind a visible loading screen, which improves UX.
+
+Simple one-phase problem example:
+- If preparation and initialization are merged into one method, the scene can start reacting to input before the minimum loading screen time ends.
+- Result: the game is already running, but the player still sees the loading screen for a short time.
+- For reaction-sensitive games, this is unacceptable and degrades UX.
 
 Example:
 
 ```csharp
 public class GameplaySceneBoot : SceneBoot
 {
-    protected override async Task RunAsync()
+    protected internal override async Task PrepareSceneAsync()
     {
+        // Optional: preload/save restore/setup data.
         await LoadGameProgressAsync();
+        await WarmupAddressablesAsync();
+    }
 
+    protected internal override async Task InitializeSceneAsync()
+    {
+        // Start scene logic only when SceneLoader calls initialize phase.
         LoadUserSettings();
         SetupUI();
         InitializeAudio();
-        // Other boot logic
+        await SpawnGameplayAsync();
     }
 }
 ```
@@ -130,7 +152,7 @@ public class GameplaySceneBoot : SceneBoot
 Notes:
 - `SceneBoot` is optional — scenes without a SceneBoot won't trigger errors.
 - Only one `SceneBoot` is expected per scene. If multiple are present, one of them will still be executed, but which one is not guaranteed.
-- `RunAsync()` is executed on the main thread and can safely use Unity API before/after `await`.
+- Both `PrepareSceneAsync()` and `InitializeSceneAsync()` are executed on the main thread and can safely use Unity API before/after `await`.
 
 ---
 
@@ -149,7 +171,11 @@ You can also trigger this process manually via the Unity menu:
 
 ### Loading Screen
 
-Loading screens are automatically displayed during scene transitions. Specifically, the loading screen becomes visible at the beginning of scene loading and stays on screen until the corresponding `SceneBoot.RunAsync()` finishes.
+Loading screens are automatically displayed during scene transitions. The loading screen becomes visible at the beginning of scene loading and stays visible through:
+- scene loading,
+- optional `PrepareSceneAsync()` phase,
+- remaining minimum display time,
+- `InitializeSceneAsync()` phase.
 
 If the loaded scene does not have a `SceneBoot` component, the loading screen will hide automatically once Unity finishes loading the scene.
 
@@ -176,13 +202,22 @@ public class MyLoadingScreen : LoadingScreen
 
 Assign your loading screen prefab in `Assets/Resources/BootSettings`. This is enough for the system to automatically instantiate and manage the screen.
 
-You can also configure `_minLoadingScreenTime` in the same asset to ensure the screen is visible long enough for a smooth UX (especially when loading is very fast).
+You can also configure `_minLoadingScreenTime` in the same asset to ensure the screen is visible long enough for a smooth UX (especially when loading is very fast). Scene logic starts in `InitializeSceneAsync()`, so the scene does not begin running while the loading screen is still forced to stay visible.
 
 ---
 
 ### SceneLoader
 
-The `SceneLoader` is the core entry point for transitioning between scenes. It ensures proper execution of the `SceneBoot` logic and manages the display of the loading screen.
+The `SceneLoader` is the core entry point for transitioning between scenes. It ensures correct `SceneBoot` phase order and manages loading screen timing.
+
+Current order:
+1. Show loading screen
+2. Load `Preload` intermediate scene (if needed)
+3. Load target scene
+4. Run `PrepareSceneAsync()` (if SceneBoot exists)
+5. Wait for remaining minimum loading-screen time
+6. Run `InitializeSceneAsync()`
+7. Hide loading screen
 
 You can load scenes by index or name using the simplified API:
 

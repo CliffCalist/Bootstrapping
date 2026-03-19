@@ -69,8 +69,15 @@ namespace WhiteArrow.Bootstraping
             yield return SceneManager.LoadSceneAsync(sceneName);
             Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
-            yield return WaitBootFinish();
-            yield return TryHideLoadingScreen(loadingStartTime);
+            if (TryGetSceneBootstrap(out var sceneBootstrap))
+            {
+                yield return WaitPreparingScene(sceneBootstrap);
+                yield return WaitLeftLoadingScreenTime(loadingStartTime);
+                yield return WaitInitializeScene(sceneBootstrap);
+            }
+            else Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
+
+            TryHideLoadingScreen();
         }
 
 
@@ -84,25 +91,42 @@ namespace WhiteArrow.Bootstraping
             }
         }
 
-        private static IEnumerator WaitBootFinish()
+
+
+        private static bool TryGetSceneBootstrap(out SceneBoot sceneBootstrap)
         {
-            var sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
+            sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
+            return sceneBootstrap != null;
+        }
+
+        private static IEnumerator WaitPreparingScene(SceneBoot sceneBootstrap)
+        {
             if (sceneBootstrap == null)
-            {
-                Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
-                yield break;
-            }
-            else
-            {
-                var bootstrapName = sceneBootstrap.GetType().Name;
-                PerformanceProfiler.StartSimpleSample(bootstrapName);
+                throw new ArgumentNullException(nameof(SceneBoot));
 
-                var sceneTask = sceneBootstrap.RunAsync();
-                yield return new WaitWhile(() => !sceneTask.IsCompleted);
+            var bootstrapName = sceneBootstrap.GetType().Name;
+            PerformanceProfiler.StartSimpleSample(bootstrapName);
 
-                PerformanceProfiler.StopSimpleSample(bootstrapName);
-                PerformanceProfiler.LogSimpleSample(bootstrapName);
-            }
+            var sceneTask = sceneBootstrap.PrepareSceneAsync();
+            yield return new WaitWhile(() => !sceneTask.IsCompleted);
+
+            PerformanceProfiler.StopSimpleSample(bootstrapName);
+            PerformanceProfiler.LogSimpleSample(bootstrapName);
+        }
+
+        private static IEnumerator WaitInitializeScene(SceneBoot sceneBootstrap)
+        {
+            if (sceneBootstrap == null)
+                throw new ArgumentNullException(nameof(SceneBoot));
+
+            var bootstrapName = sceneBootstrap.GetType().Name;
+            PerformanceProfiler.StartSimpleSample(bootstrapName);
+
+            var sceneTask = sceneBootstrap.InitializeSceneAsync();
+            yield return new WaitWhile(() => !sceneTask.IsCompleted);
+
+            PerformanceProfiler.StopSimpleSample(bootstrapName);
+            PerformanceProfiler.LogSimpleSample(bootstrapName);
         }
 
 
@@ -124,14 +148,9 @@ namespace WhiteArrow.Bootstraping
             s_loadingScreenRefCount++;
         }
 
-        private static IEnumerator TryHideLoadingScreen(float showScreenTime)
+        private static IEnumerator WaitLeftLoadingScreenTime(float showScreenTime)
         {
             if (s_loadingScreen == null || !s_loadingScreen.IsShowed)
-                yield break;
-
-            s_loadingScreenRefCount--;
-
-            if (s_loadingScreenRefCount > 0)
                 yield break;
 
             var elapsedTime = Time.time - showScreenTime;
@@ -139,6 +158,17 @@ namespace WhiteArrow.Bootstraping
 
             if (remainingLoadingTime > 0f)
                 yield return new WaitForSecondsRealtime(remainingLoadingTime);
+        }
+
+        private static void TryHideLoadingScreen()
+        {
+            if (s_loadingScreen == null || !s_loadingScreen.IsShowed)
+                return;
+
+            s_loadingScreenRefCount--;
+
+            if (s_loadingScreenRefCount > 0)
+                return;
 
             s_loadingScreen.Hide();
         }

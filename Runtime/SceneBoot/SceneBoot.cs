@@ -5,6 +5,11 @@ namespace WhiteArrow.Bootstraping
 {
     public abstract class SceneBoot : MonoBehaviour
     {
-        internal protected abstract Task RunAsync();
+        internal protected virtual Task PrepareSceneAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        internal protected abstract Task InitializeSceneAsync();
     }
 }
