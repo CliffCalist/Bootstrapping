@@ -14,8 +14,11 @@ namespace WhiteArrow.Bootstraping
             {
                 if (s_instance == null)
                 {
-                    s_instance = new GameObject("[BOOTSTRAPING]").AddComponent<DontDestroyMono>();
-                    DontDestroyOnLoad(s_instance.gameObject);
+                    var instanceObject = new GameObject("[BOOTSTRAPING]");
+                    s_instance = instanceObject.AddComponent<DontDestroyMono>();
+
+                    instanceObject.hideFlags = HideFlags.HideInHierarchy;
+                    DontDestroyOnLoad(instanceObject);
                 }
 
                 return s_instance;
