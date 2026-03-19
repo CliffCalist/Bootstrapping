@@ -58,7 +58,7 @@ namespace WhiteArrow.Bootstraping
         private static IEnumerator LoadSceneCoroutine(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
             BootSettingsProvider.Settings.ThrowIfNotEnabled();
-            GameBoot.ThrowIfNotLaunched();
+            GameLoader.ThrowIfNotLaunched();
 
             yield return TryShowLoadingScreen(skipShowLoadingScreenAnimations);
             var loadingStartTime = Time.time;

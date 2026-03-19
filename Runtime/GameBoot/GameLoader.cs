@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace WhiteArrow.Bootstraping
 {
-    public static class GameBoot
+    public static class GameLoader
     {
         public static bool IsLaunched { get; private set; }
 
