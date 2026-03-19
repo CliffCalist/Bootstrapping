@@ -44,9 +44,8 @@ Bootstrapping is:
 To install via UPM, use "Install package from git URL" and add the following:
 
 ```
-1. https://github.com/CliffCalist/grouped-performance.git
-2. https://github.com/CliffCalist/editor-flex-list.git
-3. https://github.com/CliffCalist/Bootstrapping.git
+1. https://github.com/CliffCalist/editor-flex-list.git
+2. https://github.com/CliffCalist/Bootstrapping.git
 ```
 
 ---
@@ -239,13 +238,12 @@ This package includes several helpful editor tools:
 
 ## Profiling Support
 
-Bootstrapping uses [StackedProfiling](https://github.com/CliffCalist/stacked-profiling.git) for custom profiling of module execution.
+Bootstrapping includes built-in profiling utilities and no longer depends on external profiling packages.
 
-- Each Game Boot Module is wrapped in a profiler sample with its type name
-- Scene Boot classes are also profiled
-- A global "GameBoot" sample wraps the entire game boot process
+- After all `BootModule` executions, the console prints a summarized report with each module's execution time and aggregate stats (total / avg / min / max).
+- After scene bootstrap completes, the console prints scene bootstrap timing with phase breakdown for `SceneBoot` (`PrepareSceneAsync` and `InitializeSceneAsync`).
 
-This enables better insight into boot performance and helps identify slow modules independently of Unity’s built-in timeline profiler.
+This gives immediate visibility into boot performance without additional setup.
 
 ---
 
@@ -261,4 +259,4 @@ This enables better insight into boot performance and helps identify slow module
   - [ ] Toggle Preload scene usage
 - [ ] Remove dependency
   - [x] Remove dependency on UnityTools
-  - [ ] Remove dependency on GroupedPerformance
+  - [x] Remove dependency on GroupedPerformance

@@ -1,9 +1,7 @@
 {
     "name": "WhiteArrow.Bootstraping",
     "rootNamespace": "WhiteArrow.Bootstraping",
-    "references": [
-        "GUID:2d89679e3f95447c08566e7930b20da7"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

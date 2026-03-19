@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using WhiteArrow.GroupedPerformance;
 using Object = UnityEngine.Object;
 
 namespace WhiteArrow.Bootstraping
@@ -69,11 +68,25 @@ namespace WhiteArrow.Bootstraping
             yield return SceneManager.LoadSceneAsync(sceneName);
             Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
-            if (TryGetSceneBootstrap(out var sceneBootstrap))
+
+            var sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
+            if (sceneBootstrap != null)
             {
-                yield return WaitPreparingScene(sceneBootstrap);
+                var timer = new SceneBootTimer(sceneName);
+
+                timer.OnPreparingPhaseLaunched();
+                var preparingTask = sceneBootstrap.PrepareSceneAsync();
+                yield return new WaitWhile(() => !preparingTask.IsCompleted);
+                timer.OnPreparingPhaseCompleted();
+
                 yield return WaitLeftLoadingScreenTime(loadingStartTime);
-                yield return WaitInitializeScene(sceneBootstrap);
+
+                timer.OnInitializingPhaseLaunched();
+                var initializationTask = sceneBootstrap.InitializeSceneAsync();
+                yield return new WaitWhile(() => !initializationTask.IsCompleted);
+                timer.OnInitializingPhaseCompleted();
+
+                BootProfiler.LogSceneBootTimer(timer);
             }
             else Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
 
@@ -89,44 +102,6 @@ namespace WhiteArrow.Bootstraping
                 Debug.Log($"<color=yellow>Loading intermediate scene: {INTERMEDIATE_SCENE_NAME}</color>");
                 yield return SceneManager.LoadSceneAsync(INTERMEDIATE_SCENE_NAME);
             }
-        }
-
-
-
-        private static bool TryGetSceneBootstrap(out SceneBoot sceneBootstrap)
-        {
-            sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
-            return sceneBootstrap != null;
-        }
-
-        private static IEnumerator WaitPreparingScene(SceneBoot sceneBootstrap)
-        {
-            if (sceneBootstrap == null)
-                throw new ArgumentNullException(nameof(SceneBoot));
-
-            var bootstrapName = sceneBootstrap.GetType().Name;
-            PerformanceProfiler.StartSimpleSample(bootstrapName);
-
-            var sceneTask = sceneBootstrap.PrepareSceneAsync();
-            yield return new WaitWhile(() => !sceneTask.IsCompleted);
-
-            PerformanceProfiler.StopSimpleSample(bootstrapName);
-            PerformanceProfiler.LogSimpleSample(bootstrapName);
-        }
-
-        private static IEnumerator WaitInitializeScene(SceneBoot sceneBootstrap)
-        {
-            if (sceneBootstrap == null)
-                throw new ArgumentNullException(nameof(SceneBoot));
-
-            var bootstrapName = sceneBootstrap.GetType().Name;
-            PerformanceProfiler.StartSimpleSample(bootstrapName);
-
-            var sceneTask = sceneBootstrap.InitializeSceneAsync();
-            yield return new WaitWhile(() => !sceneTask.IsCompleted);
-
-            PerformanceProfiler.StopSimpleSample(bootstrapName);
-            PerformanceProfiler.LogSimpleSample(bootstrapName);
         }
 
 
