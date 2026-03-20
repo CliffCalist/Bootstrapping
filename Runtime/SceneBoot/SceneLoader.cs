@@ -71,10 +71,6 @@ namespace WhiteArrow.Bootstraping
 
             yield return SceneManager.LoadSceneAsync(sceneName);
 
-            if (settings.IsLogEnabled(LogLevel.Summary))
-                Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
-
-
             var sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
             if (sceneBootstrap != null)
             {
@@ -99,6 +95,9 @@ namespace WhiteArrow.Bootstraping
                 if (settings.IsLogEnabled(LogLevel.Summary))
                     Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
             }
+
+            if (settings.IsLogEnabled(LogLevel.Summary))
+                Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
             TryHideLoadingScreen();
         }
