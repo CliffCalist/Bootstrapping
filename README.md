@@ -231,7 +231,7 @@ SceneLoader.LoadScene("Level01");
 
 This package includes several helpful editor tools:
 
-- **`Tools → WhiteArrow → Bootstrapping → Enable / Disable`** — allows to toggle the bootstrapping system on or off in the current project.
+- **`Tools → WhiteArrow → Bootstrapping → Enabled`** — allows to toggle the bootstrapping system on or off in the current project.
 - **`Tools → WhiteArrow → Bootstrapping → Fix Preload Scene Issue`** — validates and fixes the required Preload Scene (creates it if missing and ensures it's at build index 0).
 
 ---

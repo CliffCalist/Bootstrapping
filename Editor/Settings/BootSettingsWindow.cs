@@ -13,7 +13,7 @@ namespace WhiteArrowEditor.Bootstraping
 
 
 
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Settings")]
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Settings", priority = 0)]
         public static void Open()
         {
             var window = GetWindow<BootSettingsWindow>("Boot Settings");

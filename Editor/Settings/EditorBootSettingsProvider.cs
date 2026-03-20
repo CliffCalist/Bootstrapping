@@ -29,31 +29,18 @@ namespace WhiteArrowEditor.Bootstraping
 
 
 
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Enable", true)]
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Enabled", true)]
         private static bool ValidateEnable()
         {
-            return !Settings.IsEnabled;
+            Menu.SetChecked("Tools/WhiteArrow/Bootstraping/Enabled", Settings.IsEnabled);
+            return true;
         }
 
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Enable")]
-        public static void Enable()
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Enabled", priority = 1)]
+        public static void ToggleEnabledState()
         {
-            Settings.IsEnabled = true;
-            Save();
-        }
-
-
-
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Disable", true)]
-        private static bool ValidateDisable()
-        {
-            return Settings.IsEnabled;
-        }
-
-        [MenuItem("Tools/WhiteArrow/Bootstraping/Disable")]
-        public static void Disable()
-        {
-            Settings.IsEnabled = false;
+            var settings = Settings;
+            settings.IsEnabled = !settings.IsEnabled;
             Save();
         }
 
