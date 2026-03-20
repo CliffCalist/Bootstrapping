@@ -8,6 +8,7 @@ namespace WhiteArrow.Bootstraping
     public class BootSettings : ScriptableObject, IReadOnlyBootSettings
     {
         [SerializeField] private bool _isEnabled = true;
+        [SerializeField] private LogLevel _logLevel = LogLevel.ErrorsOnly;
         [SerializeField, Min(0)] private float _minLoadingScreenTime = 3f;
         [SerializeField] private LoadingScreen _loadingScreen;
         [SerializeField] private List<AsyncBootModule> _modules;
@@ -48,10 +49,17 @@ namespace WhiteArrow.Bootstraping
         {
             if (!_isEnabled)
             {
-                Debug.Log("<color=red>Bootstraping is disabled. Skipping bootstrap logic.</color>");
+                if (IsLogEnabled(LogLevel.Summary))
+                    Debug.Log("<color=red>Bootstraping is disabled. Skipping bootstrap logic.</color>");
+
                 return true;
             }
             else return false;
+        }
+
+        public bool IsLogEnabled(LogLevel requiredLevel)
+        {
+            return _logLevel >= requiredLevel;
         }
 
         public void ThrowIfNotEnabled()

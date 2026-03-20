@@ -36,6 +36,7 @@ namespace WhiteArrow.Bootstraping
         private static IEnumerator LoadSceneCoroutine(int buildIndex, bool skipShowLoadingScreenAnimations = false)
         {
             var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+
             if (string.IsNullOrEmpty(scenePath))
                 throw new ArgumentException($"Scene with build index {buildIndex} not found in Build Settings.");
 
@@ -57,16 +58,21 @@ namespace WhiteArrow.Bootstraping
         /// </summary>
         private static IEnumerator LoadSceneCoroutine(string sceneName, bool skipShowLoadingScreenAnimations = false)
         {
-            BootSettingsProvider.Settings.ThrowIfNotEnabled();
+            var settings = BootSettingsProvider.Settings;
+            settings.ThrowIfNotEnabled();
             GameLoader.ThrowIfNotLaunched();
 
             yield return TryShowLoadingScreen(skipShowLoadingScreenAnimations);
             var loadingStartTime = Time.time;
             yield return LoadIntermediateScene();
 
-            Debug.Log($"<color=yellow>Loading target scene: {sceneName}</color>");
+            if (settings.IsLogEnabled(LogLevel.Summary))
+                Debug.Log($"<color=yellow>Loading target scene: {sceneName}</color>");
+
             yield return SceneManager.LoadSceneAsync(sceneName);
-            Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
+
+            if (settings.IsLogEnabled(LogLevel.Summary))
+                Debug.Log($"<color=green>Scene {sceneName} successfully loaded.</color>");
 
 
             var sceneBootstrap = Object.FindAnyObjectByType<SceneBoot>();
@@ -88,7 +94,11 @@ namespace WhiteArrow.Bootstraping
 
                 BootProfiler.LogSceneBootTimer(timer);
             }
-            else Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
+            else
+            {
+                if (settings.IsLogEnabled(LogLevel.Summary))
+                    Debug.LogWarning($"{nameof(SceneBoot)} isn't found on loaded scene.");
+            }
 
             TryHideLoadingScreen();
         }
@@ -99,7 +109,9 @@ namespace WhiteArrow.Bootstraping
         {
             if (SceneManager.GetActiveScene().name != INTERMEDIATE_SCENE_NAME)
             {
-                Debug.Log($"<color=yellow>Loading intermediate scene: {INTERMEDIATE_SCENE_NAME}</color>");
+                if (BootSettingsProvider.Settings.IsLogEnabled(LogLevel.Verbose))
+                    Debug.Log($"<color=yellow>Loading intermediate scene: {INTERMEDIATE_SCENE_NAME}</color>");
+
                 yield return SceneManager.LoadSceneAsync(INTERMEDIATE_SCENE_NAME);
             }
         }

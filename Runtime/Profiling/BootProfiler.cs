@@ -16,6 +16,9 @@ namespace WhiteArrow.Bootstraping
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
 
+            if (!BootSettingsProvider.Settings.IsLogEnabled(LogLevel.Verbose))
+                return;
+
             var sb = new System.Text.StringBuilder();
             sb.AppendLine($"{LOG_TAG} {timer.SceneBootName}");
             sb.AppendLine($" ├ Preparing:\t{timer.PreparingMilliseconds,0:F3} ms");
@@ -30,6 +33,9 @@ namespace WhiteArrow.Bootstraping
         {
             if (timers == null)
                 throw new ArgumentNullException(nameof(timers));
+
+            if (!BootSettingsProvider.Settings.IsLogEnabled(LogLevel.Verbose))
+                return;
 
             var total = timers.Sum(s => s.DurationMilliseconds);
             var avg = timers.Count > 0 ? timers.Average(s => s.DurationMilliseconds) : 0;

@@ -28,10 +28,13 @@ namespace WhiteArrow.Bootstraping
 
         private static async Task RunAsync()
         {
-            if (BootSettingsProvider.Settings.LogIfNotEnabled())
+            var settings = BootSettingsProvider.Settings;
+
+            if (settings.LogIfNotEnabled())
                 return;
 
-            Debug.Log("<b>Game is bootstraping...</b>");
+            if (settings.IsLogEnabled(LogLevel.Summary))
+                Debug.Log("<b>Game is bootstraping...</b>");
 
             PrepareLoadingScreen();
             await ExecuteModules();
@@ -54,14 +57,16 @@ namespace WhiteArrow.Bootstraping
 
         private static async Task ExecuteModules()
         {
-            var modules = BootSettingsProvider.Settings.Modules.Where(m => m != null);
+            var settings = BootSettingsProvider.Settings;
+            var modules = settings.Modules.Where(m => m != null);
             var timers = new List<GameBootModuleTimer>();
 
             foreach (var module in modules)
             {
                 var moduleName = module.GetType().Name;
 
-                Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
+                if (settings.IsLogEnabled(LogLevel.Verbose))
+                    Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
 
                 var timer = new GameBootModuleTimer(moduleName);
                 timers.Add(timer);
@@ -81,10 +86,13 @@ namespace WhiteArrow.Bootstraping
                     timer.OnFinished();
                 }
 
-                Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
+                if (settings.IsLogEnabled(LogLevel.Verbose))
+                    Debug.Log($"<color=green>Game module {moduleName} executed.</color>");
             }
 
-            Debug.Log("<color=green>All game modules executed.</color>");
+            if (settings.IsLogEnabled(LogLevel.Summary))
+                Debug.Log("<color=green>All game modules executed.</color>");
+
             BootProfiler.LogGameBootModuleTimers(timers);
         }
     }

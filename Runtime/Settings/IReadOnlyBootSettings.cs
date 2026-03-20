@@ -13,5 +13,6 @@ namespace WhiteArrow.Bootstraping
 
         bool LogIfNotEnabled();
         void ThrowIfNotEnabled();
+        bool IsLogEnabled(LogLevel requiredLevel);
     }
 }

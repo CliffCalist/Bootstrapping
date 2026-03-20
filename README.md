@@ -236,10 +236,31 @@ This package includes several helpful editor tools:
 
 ---
 
+## Logging
+
+Bootstrapping runtime logging is controlled by `LogLevel` in `Assets/Resources/BootSettings`.
+
+Available levels:
+- `ErrorsOnly` — logs only critical failures (`Debug.LogError` / `Debug.LogException`) such as game boot module execution errors.
+- `Summary` — includes `ErrorsOnly` plus high-level flow logs:
+  - game bootstrap start and finish,
+  - target scene loading start and success,
+  - warning when `SceneBoot` is missing in a loaded scene,
+  - disabled bootstrapping notice.
+- `Verbose` — includes `Summary` plus detailed flow logs:
+  - per-module start/finish logs for game boot modules,
+  - intermediate `Preload` scene loading logs,
+  - profiling timing reports.
+
+Use `Summary` for regular development visibility and `Verbose` for deep diagnostics.
+
+---
+
 ## Profiling Support
 
 Bootstrapping includes built-in profiling utilities and no longer depends on external profiling packages.
 
+- Profiling logs are shown only when `LogLevel` is set to `Verbose`.
 - After all `BootModule` executions, the console prints a summarized report with each module's execution time and aggregate stats (total / avg / min / max).
 - After scene bootstrap completes, the console prints scene bootstrap timing with phase breakdown for `SceneBoot` (`PrepareSceneAsync` and `InitializeSceneAsync`).
 
