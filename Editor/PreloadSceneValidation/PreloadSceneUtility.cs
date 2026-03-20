@@ -38,7 +38,7 @@ namespace WhiteArrowEditor.Bootstraping
         [MenuItem("Tools/WhiteArrow/Bootstraping/Fix Preload Scene Issue", true)]
         private static bool ValidateFixPreloadSceneIssue()
         {
-            return !PreloadSceneUtility.IsValid();
+            return !IsValid();
         }
 
         [MenuItem("Tools/WhiteArrow/Bootstraping/Fix Preload Scene Issue")]

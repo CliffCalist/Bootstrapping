@@ -29,6 +29,36 @@ namespace WhiteArrowEditor.Bootstraping
 
 
 
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Enable", true)]
+        private static bool ValidateEnable()
+        {
+            return !Settings.IsEnabled;
+        }
+
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Enable")]
+        public static void Enable()
+        {
+            Settings.IsEnabled = true;
+            Save();
+        }
+
+
+
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Disable", true)]
+        private static bool ValidateDisable()
+        {
+            return Settings.IsEnabled;
+        }
+
+        [MenuItem("Tools/WhiteArrow/Bootstraping/Disable")]
+        public static void Disable()
+        {
+            Settings.IsEnabled = false;
+            Save();
+        }
+
+
+
         private static void Load()
         {
             if (s_settings != null)
@@ -49,7 +79,7 @@ namespace WhiteArrowEditor.Bootstraping
             }
         }
 
-        public static void CreateFullFolderPath(string path)
+        private static void CreateFullFolderPath(string path)
         {
             if (!AssetDatabase.IsValidFolder(path))
             {
@@ -66,6 +96,8 @@ namespace WhiteArrowEditor.Bootstraping
                 }
             }
         }
+
+
 
         public static void Save()
         {
