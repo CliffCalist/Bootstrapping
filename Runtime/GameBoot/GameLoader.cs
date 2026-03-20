@@ -37,7 +37,11 @@ namespace WhiteArrow.Bootstraping
                 Debug.Log("<b>Game is bootstraping...</b>");
 
             PrepareLoadingScreen();
-            await ExecuteModules();
+            var bootCompleted = await ExecuteModules();
+
+            if (!bootCompleted)
+                return;
+
             IsLaunched = true;
 
             SceneLoader.LoadScene(1);
@@ -55,7 +59,7 @@ namespace WhiteArrow.Bootstraping
             }
         }
 
-        private static async Task ExecuteModules()
+        private static async Task<bool> ExecuteModules()
         {
             var settings = BootSettingsProvider.Settings;
             var modules = settings.Modules.Where(m => m != null);
@@ -64,6 +68,7 @@ namespace WhiteArrow.Bootstraping
             foreach (var module in modules)
             {
                 var moduleName = module.GetType().Name;
+                var shouldStopBoot = false;
 
                 if (settings.IsLogEnabled(LogLevel.Verbose))
                     Debug.Log($"<color=yellow>Running game module: {moduleName}.</color>");
@@ -80,10 +85,32 @@ namespace WhiteArrow.Bootstraping
                 {
                     Debug.LogError($"<b>Game boot module failed:</b> {moduleName}");
                     Debug.LogException(ex);
+
+                    try
+                    {
+                        await module.OnErrorAsync(ex);
+                    }
+                    catch (Exception handlerEx)
+                    {
+                        Debug.LogError($"<b>Game boot module error handler failed:</b> {moduleName}");
+                        Debug.LogException(handlerEx);
+                    }
+
+                    if (module.FailureAction == BootFailureAction.Stop)
+                    {
+                        shouldStopBoot = true;
+                    }
                 }
                 finally
                 {
                     timer.OnFinished();
+                }
+
+                if (shouldStopBoot)
+                {
+                    Debug.LogError($"<b>Game boot stopped by failure policy.</b> Module: {moduleName}");
+                    BootProfiler.LogGameBootModuleTimers(timers);
+                    return false;
                 }
 
                 if (settings.IsLogEnabled(LogLevel.Verbose))
@@ -94,6 +121,7 @@ namespace WhiteArrow.Bootstraping
                 Debug.Log("<color=green>All game modules executed.</color>");
 
             BootProfiler.LogGameBootModuleTimers(timers);
+            return true;
         }
     }
 }
