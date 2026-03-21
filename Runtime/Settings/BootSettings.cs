@@ -9,8 +9,13 @@ namespace WhiteArrow.Bootstraping
     {
         [SerializeField] private bool _isEnabled = true;
         [SerializeField] private LogLevel _logLevel = LogLevel.ErrorsOnly;
+
+        [Space]
         [SerializeField, Min(0)] private float _minLoadingScreenTime = 3f;
         [SerializeField] private LoadingScreen _loadingScreen;
+
+        [Space]
+        [SerializeField] private BootErrorHandler _errorHandlerPrefab;
         [SerializeField] private List<AsyncBootModule> _modules;
 
 
@@ -41,6 +46,12 @@ namespace WhiteArrow.Bootstraping
         {
             get => _loadingScreen;
             internal set => _loadingScreen = value;
+        }
+
+        public BootErrorHandler ErrorHandlerPrefab
+        {
+            get => _errorHandlerPrefab;
+            internal set => _errorHandlerPrefab = value;
         }
 
 

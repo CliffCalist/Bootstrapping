@@ -7,6 +7,7 @@ namespace WhiteArrow.Bootstraping
         bool IsEnabled { get; }
         float MinLoadingScreenTime { get; }
         LoadingScreen LoadingScreen { get; }
+        BootErrorHandler ErrorHandlerPrefab { get; }
         IReadOnlyList<AsyncBootModule> Modules { get; }
 
 

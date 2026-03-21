@@ -26,6 +26,8 @@ namespace WhiteArrow.Bootstraping
             _ = RunAsync();
         }
 
+
+
         private static async Task RunAsync()
         {
             var settings = BootSettingsProvider.Settings;
@@ -36,16 +38,49 @@ namespace WhiteArrow.Bootstraping
             if (settings.IsLogEnabled(LogLevel.Summary))
                 Debug.Log("<b>Game is bootstraping...</b>");
 
+            var bootErrorHandler = CreateBootErrorHandler(settings.ErrorHandlerPrefab);
+
             PrepareLoadingScreen();
-            var bootCompleted = await ExecuteModules();
+            var bootCompleted = await ExecuteModules(bootErrorHandler);
+
+            await SelfDestroyErrorHandler(bootErrorHandler);
 
             if (!bootCompleted)
                 return;
 
             IsLaunched = true;
-
             SceneLoader.LoadScene(1);
         }
+
+
+
+        private static BootErrorHandler CreateBootErrorHandler(BootErrorHandler prefab)
+        {
+            if (prefab == null)
+                return null;
+
+            var instance = Object.Instantiate(prefab);
+            Object.DontDestroyOnLoad(instance.gameObject);
+            return instance;
+        }
+
+        private static async Task SelfDestroyErrorHandler(BootErrorHandler handler)
+        {
+            if (handler == null)
+                return;
+
+            try
+            {
+                await handler.SelfDestroyAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"<b>Global boot error handler destroy failed:</b> {handler.GetType().Name}");
+                Debug.LogException(ex);
+            }
+        }
+
+
 
         private static void PrepareLoadingScreen()
         {
@@ -59,7 +94,9 @@ namespace WhiteArrow.Bootstraping
             }
         }
 
-        private static async Task<bool> ExecuteModules()
+
+
+        private static async Task<bool> ExecuteModules(BootErrorHandler bootErrorHandler)
         {
             var settings = BootSettingsProvider.Settings;
             var modules = settings.Modules.Where(m => m != null);
@@ -86,6 +123,9 @@ namespace WhiteArrow.Bootstraping
                     Debug.LogError($"<b>Game boot module failed:</b> {moduleName}");
                     Debug.LogException(ex);
 
+                    var isCritical = module.FailureAction == BootFailureAction.Stop;
+                    var context = new BootErrorContext(moduleName, ex, isCritical);
+
                     try
                     {
                         await module.OnErrorAsync(ex);
@@ -96,10 +136,20 @@ namespace WhiteArrow.Bootstraping
                         Debug.LogException(handlerEx);
                     }
 
-                    if (module.FailureAction == BootFailureAction.Stop)
+                    if (bootErrorHandler != null)
                     {
-                        shouldStopBoot = true;
+                        try
+                        {
+                            await bootErrorHandler.OnErrorAsync(context);
+                        }
+                        catch (Exception handlerEx)
+                        {
+                            Debug.LogError($"<b>Global boot error handler failed:</b> {bootErrorHandler.GetType().Name}");
+                            Debug.LogException(handlerEx);
+                        }
                     }
+
+                    shouldStopBoot = isCritical;
                 }
                 finally
                 {
